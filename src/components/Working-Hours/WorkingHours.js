@@ -103,7 +103,7 @@ export default class WorkingHours extends Component {
                                     </div>
                                 </div>
                             </header>
-                            <section className="client no-padding-bottom">
+                            <section className="client no-padding-bottom-yup">
                                 <div className="container-fluid">
                                     <div className="row">
                                         <div className="col-lg-12">

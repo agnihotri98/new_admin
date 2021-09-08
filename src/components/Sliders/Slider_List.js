@@ -107,6 +107,8 @@ export default class Slider_List extends Component {
   }
 
   change_slider_status = () => {
+    // console.log('=================', id);
+    // console.log('=================', status);
     const token = localStorage.getItem("token");
     const data = new FormData();
     data.append("slider_id", this.state.s_id);
@@ -118,6 +120,7 @@ export default class Slider_List extends Component {
         },
       })
       .then((res) => {
+        // console.log('===================', res);
         this.setState({
           changestatusdone: true,
         })
@@ -146,12 +149,15 @@ export default class Slider_List extends Component {
         },
       })
       .then((res) => {
+        // console.log(res.data.data.banner_image);
         console.log(res.data.message);
         if (res.data.message === "Add Banner successfully!" || res.data.message === "You have same image updated") {
           this.setState({
             success: res.data.message,
             addslidersuccess: true,
           })
+          // this.props.history.push('/Slider-List')
+          // window.location.reload();
           this.getslider_api();
 
         }
@@ -198,6 +204,7 @@ export default class Slider_List extends Component {
 
   edit_slider = (id) => {
     const img = this.state.userlist ? this.state.userlist.filter((x) => x.id === id) : ""
+    console.log("img=================", img);
     this.setState({
       slider_id: id,
       image_url: img[0].banner_image,
@@ -260,18 +267,20 @@ export default class Slider_List extends Component {
     })
   }
   render() {
+    // console.log("vxcvvvvvvvvvvv", this.state.slider_id);
     const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
     const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
     const currentPosts = this.state.userlist ? this.state.userlist.slice(indexOfFirstPost, indexOfLastPost) : "";
     const length = this.state.userlist ? this.state.userlist.length : "";
 
-    // const dataFilter = currentPosts ? currentPosts.filter((x, i) => {
-    //   if (!this.state.search) return x;
-    //   else if (this.state.search) return x.status.toLowerCase().includes(this.state.search.toLowerCase())
+    const dataFilter = currentPosts ? currentPosts.filter((x, i) => {
+      if (!this.state.search) return x;
+      else if (this.state.search) return x.status.toLowerCase().includes(this.state.search.toLowerCase())
 
-    // }) : []
+    }) : []
+    // console.log("dataFilter", dataFilter);
+    const tableData = dataFilter ? dataFilter.map((x, i) => (
 
-    const tableData = currentPosts ? currentPosts.map((x, i) => (
       <tr id="dataid10" role="row" className="odd" key={i}>
         <td className="sorting_1">{i + 1}</td>
         <td>{x.banner_name}</td>
@@ -280,6 +289,9 @@ export default class Slider_List extends Component {
         <td>
           <img src={x.banner_image} className="img-fluid" style={{ maxheight: "50px" }} alt="" />
         </td>
+
+        {/* <td>Restaurant-Cake</td>
+        <td>15-05 2021 04:24PM</td> */}
         <td>
           <span>
             <button className="badge badge-success px-2" onClick={(e) => this.change_slider_id(x.id, x.status === "1" ? '0' : '1')} style={{ color: "#fff" }}>{x.status === "1" ? "Active" : "Inactive"}</button>
@@ -294,7 +306,11 @@ export default class Slider_List extends Component {
           <button type="button" className="btn btn-danger" onClick={(e) => this.get_id(x.id)}>
             Delete
           </button>
-
+          {/* <span>
+            <Link to="" >
+              <span className="badge badge-warning">Edit</span>
+            </Link>
+          </span> */}
         </td>
       </tr>
     ))
@@ -363,13 +379,19 @@ export default class Slider_List extends Component {
           : ""}
 
         <div className="page">
+          {/* <!-- Main Navbar--> */}
           <Headers />
           <div className="page-content d-flex align-items-stretch">
+            {/* <!-- Side Navbar --> */}
             <Sidebars />
             <div className="content-inner">
               <div className="container-fluid">
                 <div className="model">
-
+                  {/* <div className="fellom">
+                 <button type="button" className="btn btn-primary" data-toggle="modal"  data-backdrop="static" data-keyboard="false" data-target="#myModal1111">
+                    Add Slider
+                  </button>
+                 </div> */}
                   <div className="modal" id="myModal1111">
                     <div className="modal-dialog">
                       <div className="modal-content">
@@ -396,8 +418,20 @@ export default class Slider_List extends Component {
                           </div>
                           : " "}
 
+
+
                         <form onSubmit={(e) => this.addslider_api(e)}>
                           <div className="modal-body">
+                            {/* <div className="form-group">
+                              <label className="slider_lit" for="get_title" className="col-form-label">Slider Title</label>
+                              <input type="text" className="form-control" id="get_title" name="title" placeholder="Slider Title" />
+                            </div>
+                            <div className="form-group">
+                              <label className="slider_lit" for="get_description" className="col-form-label">Description</label>
+                              <textarea name="description" id="get_description" className="form-control" rows="4" placeholder="Description"></textarea>
+                            </div> */}
+
+
                             <div className="form-group">
                               <label className="slider_lit col-form-label" for="Name">Name</label>
                               <input type="text" className="form-control" id="name" name="name" value={this.state.name} placeholder="name" onChange={(e) => this.handleChange1(e)} required />
@@ -408,10 +442,12 @@ export default class Slider_List extends Component {
                               <input type="text" className="form-control" id="manager_name" name="heading" value={this.state.heading} placeholder="heading" onChange={(e) => this.handleChange1(e)} required />
                             </div>
 
+
                             <div className="form-group">
                               <label className="slider_lit col-form-label" for="description"></label>
                               <input type="text" className="form-control" id="manager_name" name="description" maxlength="500" value={this.state.description} placeholder="You can add only 150 words...." onChange={(e) => this.handleChange1(e)} required />
                             </div>
+
 
                             <div className="form-group">
                               <label className="slider_lit col-form-label" for="image">image</label>
@@ -430,6 +466,9 @@ export default class Slider_List extends Component {
 
                             </div>
 
+
+
+
                             <div className="gallerys"></div>
                           </div>
                           <div className="modal-footer">
@@ -437,6 +476,8 @@ export default class Slider_List extends Component {
                             <button type="submit" className="btn btn-primary" >Update</button>
                           </div>
                         </form>
+
+
 
                       </div>
                     </div>
@@ -480,14 +521,14 @@ export default class Slider_List extends Component {
                             <table className="table table-striped table-bordered zero-configuration dataTable no-footer" id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info">
                               <thead>
                                 <tr role="row">
-                                  <th className="sorting" style={{ width: "47px" }}> #</th>
-                                  <th className="sorting" style={{ width: "179px" }}> Name</th>
-                                  <th className="sorting" style={{ width: "179px" }}> heading</th>
-                                  <th className="sorting" style={{ width: "179px" }}> Description</th>
-                                  <th className="sorting" style={{ width: "154px" }}> Image</th>
-                                  <th className="sorting" style={{ width: "122px" }}> Status</th>
-                                  <th className="sorting" style={{ width: "225px" }}> Created at</th>
-                                  <th className="sorting" style={{ width: "225px" }}> Action</th>
+                                  <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-sort="descending" aria-label="#: activate to sort column ascending" style={{ width: "47px" }}>#</th>
+                                  <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Slider Title: activate to sort column ascending" style={{ width: "179px" }}>Name</th>
+                                  <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Description: activate to sort column ascending" style={{ width: "179px" }}>heading</th>
+                                  <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Description: activate to sort column ascending" style={{ width: "179px" }}>Description</th>
+                                  <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Image: activate to sort column ascending" style={{ width: "154px" }}>Image</th>
+                                  <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending" style={{ width: "122px" }}>Status</th>
+                                  <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Created at: activate to sort column ascending" style={{ width: "225px" }}>Created at</th>
+                                  <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Created at: activate to sort column ascending" style={{ width: "225px" }}>Action</th>
                                 </tr>
                               </thead>
                               <tbody>
@@ -498,9 +539,10 @@ export default class Slider_List extends Component {
                             </table>
 
                             <div className="row" style={{ width: "100%" }}>
+
                               <div className="col-md-6" >
                                 <h3 className="total_rec"> Show once  </h3>
-                                <select id="dropdown_custom" onChange={this.handleChange} value={this.state.postsPerPage} >
+                                <select id="dropdown_custom" onChange={this.handleChange} >
                                   <option value="10">10</option>
                                   <option value="20">20</option>
                                   <option value="40">40</option>

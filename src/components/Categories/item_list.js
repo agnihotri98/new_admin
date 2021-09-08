@@ -7,7 +7,6 @@ import Headers from '../Header/header';
 import Sidebars from '../Sidebar/sidebar';
 import Footers from '../Footer/footer';
 import Files from 'react-files'
-import {BaseURL} from '../base_url';
 
 export default class item_list extends Component {
     state = {
@@ -72,7 +71,7 @@ export default class item_list extends Component {
     getcategory_api = () => {
         const token = localStorage.getItem("token");
         axios
-            .get(`${BaseURL}/api/get-categoriesbystatus`, {
+            .get("http://134.209.157.211/champbakery/public/api/get-categoriesbystatus", {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -88,7 +87,10 @@ export default class item_list extends Component {
                     this.setState({
                         message: result.data?.data.message
                     })
-                } 
+                }
+                // console.log("result", result.data?.data.message === message: "Something Went Wrong"
+                // );
+
             })
             .catch((err) => {
                 console.log(err.response);
@@ -98,7 +100,7 @@ export default class item_list extends Component {
     getitem_api = () => {
         const token = localStorage.getItem("token");
         axios
-            .get(`${BaseURL}/api/get-itemes`, {
+            .get("http://134.209.157.211/champbakery/public/api/get-itemes", {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -107,7 +109,8 @@ export default class item_list extends Component {
                 this.setState({
                     usercount: result.data.data.length,
                     userlist: result.data.data
-                }) 
+                })
+                // console.log("result", result.data.data);
             })
             .catch((err) => {
                 console.log(err.response);
@@ -117,7 +120,7 @@ export default class item_list extends Component {
     delete_item = () => {
         const token = localStorage.getItem("token");
         axios
-            .get(`${BaseURL}/api/delete_item/${this.state.id_d}`, {
+            .get(`http://134.209.157.211/champbakery/public/api/delete_item/${this.state.id_d}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -128,7 +131,9 @@ export default class item_list extends Component {
                     this.setState({
                         deletesuccess: res.data.message,
                         successs: true,
-                    })  
+                    })
+                    // this.props.history.push('/Slider-List')
+                    // window.location.reload();
                     this.getitem_api();
                 }
                 if (res.data.message === "Something Went Wrong") {
@@ -141,19 +146,22 @@ export default class item_list extends Component {
                 console.log(err.response);
             });
     }
-    change_item_status = (id, statusss) => { 
+    change_item_status = (id, statusss) => {
+        // console.log('=================',id);
+        // console.log('=================',statusss);
         const token = localStorage.getItem("token");
 
         const data = new FormData();
         data.append("item_id", this.state.i_id);
         data.append("status", this.state.i_status);
         axios
-            .post(`${BaseURL}/api/change_item_status`, data, {
+            .post("http://134.209.157.211/champbakery/public/api/change_item_status", data, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             })
-            .then((res) => { 
+            .then((res) => {
+                console.log('===================', res);
                 this.setState({
                     changestatusdone: true,
                 })
@@ -163,16 +171,17 @@ export default class item_list extends Component {
                 console.log(err);
             });
     }
-
-
-    additem_api = (e) => { 
+    additem_api = (e) => {
+        // debugger
         e.preventDefault();
         const token = localStorage.getItem("token");
 
         const data = new FormData();
         data.append("category_id", this.state.cat_id);
         data.append("inventory_name", this.state.item_name);
-        data.append("price", this.state.price); 
+        data.append("price", this.state.price);
+        // data.append("medium_price", this.state.m_price);
+        // data.append("large_price", this.state.l_price);
         data.append("discount", this.state.discount);
         data.append("qty", this.state.qty);
         data.append("weight_type", this.state.weight_type);
@@ -183,7 +192,8 @@ export default class item_list extends Component {
 
         data.append("image", this.state.image);
         axios
-            .post(`${BaseURL}/api/${this.state.item_id ? `edit_item/${this.state.item_id}` : `add_item`}`, data, {
+            .post(`http://134.209.157.211/champbakery/public/api/${this.state.item_id ? `edit_item/${this.state.item_id}` : `add_item`}`, data, {
+                //   .post('http://134.209.157.211/champbakery/public/api/add_item', data, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -193,7 +203,9 @@ export default class item_list extends Component {
                     this.setState({
                         success: res.data.message,
                         additemsuccess: true,
-                    }) 
+                    })
+                    // this.props.history.push('/Slider-List')
+                    // window.location.reload();
                     this.getitem_api();
                 }
                 if (res.data.message === "Record Updated successfully !") {
@@ -243,7 +255,9 @@ export default class item_list extends Component {
             item_id: id,
             image_url: img[0].image,
             item_name: img[0].inventory_name,
-            price: img[0].price, 
+            price: img[0].price,
+            // m_price: img[0].medium_price,
+            // l_price: img[0].large_price,
             discount: img[0].discount,
             qty: img[0].qty,
             weight_type: img[0].weight_type,
@@ -253,7 +267,9 @@ export default class item_list extends Component {
             user_type: img[0].user_type,
             category_tab: img[0].category_tab,
             category_id: img[0].category_id,
-            c_id: img[0].id, 
+            c_id: img[0].id,
+
+            // category_name: img[0].category_name,
         })
     }
 
@@ -337,13 +353,14 @@ export default class item_list extends Component {
     }
 
     handleChange = (selectedOption) => {
-        this.setState({ selectedOption }); 
+        this.setState({ selectedOption });
+        console.log(`Option selected:`, selectedOption);
     };
 
 
 
-    render() { 
-
+    render() {
+        console.log("categories", this.state.categories);
         const { message, loading, categories, c_id, cat_id } = this.state;
         const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
         const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
@@ -355,7 +372,7 @@ export default class item_list extends Component {
             else if (this.state.search) return x.category_name.toLowerCase().includes(this.state.search.toLowerCase()) || x.inventory_name.toLowerCase().includes(this.state.search.toLowerCase()) || x.user_type.toLowerCase().includes(this.state.search.toLowerCase())
 
         }) : []
-
+        console.log("dataFilter", c_id);
         const tableData = dataFilter ? dataFilter.map((x, i) => (
 
             <tr id="dataid53" role="row" className="even" key={i}>
@@ -364,6 +381,8 @@ export default class item_list extends Component {
                 <td>{x.inventory_name}</td>
                 <td><img src={x.image} className="img-fluid" style={{ maxHeight: "50px" }} alt="" /></td>
                 <td>${x.price}.00</td>
+                {/* <td>${x.medium_price}.00</td>
+                <td>${x.large_price}.00</td> */}
                 <td>${x.discount}.00</td>
                 <td>{x.user_type}</td>
                 <td>{x.howTouse}</td>
@@ -392,7 +411,9 @@ export default class item_list extends Component {
                     <div className="form-group">
                         <label className="slider_lit col-form-label" for="category_tab" >Category Tab:</label>
                         <select name="category_tab" className="form-control" id="category_tab" onChange={this.handleChange1}
-                            required> 
+                            // value={this.state.special_orders === '1' ? 'Special orders' : this.state.shipping_outside === '1' ? 'Order now' : this.state.samar_basket === '1' ? 'Samar Basket' : ""} 
+                            required>
+                            {/* <option value="all">All</option> */}
                             <option value="">Select Category</option>
                             <option value="special_orders">Special orders</option>
                             <option value="shipping_outside">Order now</option>
@@ -402,8 +423,8 @@ export default class item_list extends Component {
                     </div>
                     : ""}
             </>
-        ) 
-        
+        )
+        console.log("user_type", user_type);
         return (
             <div>
                 {deleteValid ? (

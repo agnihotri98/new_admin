@@ -7,9 +7,7 @@ import Pagination from '../pagination/pagination';
 import Headers from '../Header/header';
 import Sidebars from '../Sidebar/sidebar';
 import Footers from '../Footer/footer';
-import Files from 'react-files';
-import {BaseURL} from '../base_url';
-
+import Files from 'react-files'
 export default class Category_list extends Component {
     state = {
         usercount: '0',
@@ -32,6 +30,7 @@ export default class Category_list extends Component {
     }
     onFilesChange = (files) => {
         this.colse_mess();
+        // console.log(files)
         this.setState({
             image: files[0],
             image_url: URL.createObjectURL(files[0]),
@@ -41,21 +40,23 @@ export default class Category_list extends Component {
     onFilesError = (error, file) => {
         console.log('error code ' + error.code + ': ' + error.message)
     }
-
     getcategory_api = () => {
         const token = localStorage.getItem("token");
         axios
-            .get(`${BaseURL}/api/get-categories`, {
+            .get("http://134.209.157.211/champbakery/public/api/get-categories", {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             })
             .then((result) => {
+                debugger
+                console.log("result?.data?.message", result?.data?.message);
                 if (result?.data?.message === "Something Went Wrong") {
                     this.setState({
                         message: result?.data?.message
                     })
                 }
+                console.log("result", result);
                 if (result.data.data) {
 
                     this.setState({
@@ -66,6 +67,7 @@ export default class Category_list extends Component {
 
                     })
                 }
+                // console.log("result", result.data.data);
             })
             .catch((err) => {
                 this.setState({
@@ -79,12 +81,13 @@ export default class Category_list extends Component {
     delete_category = () => {
         const token = localStorage.getItem("token");
         axios
-            .get(`${BaseURL}/api/delete_category/${this.state.id_d}`, {
+            .get(`http://134.209.157.211/champbakery/public/api/delete_category/${this.state.id_d}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             })
             .then((res) => {
+                console.log(res);
                 if (res.data.message === "Record deleted successfully !") {
                     this.setState({
                         deletesuccess: res.data.message,
@@ -116,12 +119,13 @@ export default class Category_list extends Component {
         data.append("cat_id", this.state.c_id);
         data.append("status", this.state.c_status);
         axios
-            .post(`${BaseURL}/api/change_cat_status`, data, {
+            .post("http://134.209.157.211/champbakery/public/api/change_cat_status", data, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             })
             .then((res) => {
+                console.log('===================', res);
                 this.setState({
                     changestatusdone: true,
                 })
@@ -139,7 +143,7 @@ export default class Category_list extends Component {
         data.append("category_name", this.state.category_name);
         data.append("category_image", this.state.image);
         axios
-            .post(`${BaseURL}/api/${this.state.category_id ? `edit_category/${this.state.category_id}` : `add_category`}`, data, {
+            .post(`http://134.209.157.211/champbakery/public/api/${this.state.category_id ? `edit_category/${this.state.category_id}` : `add_category`}`, data, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -150,6 +154,8 @@ export default class Category_list extends Component {
                         success: res.data.message,
                         addcatsuccess: true,
                     })
+                    // this.props.history.push('/Slider-List')
+                    // window.location.reload();
                     this.getcategory_api();
 
                 }
@@ -175,6 +181,8 @@ export default class Category_list extends Component {
                         banner_image_err: res.data.data.category_image || res.data.data.category_name
                     })
                 }
+
+                console.log(res);
             })
             .catch((err) => {
                 console.log(err);
@@ -192,6 +200,7 @@ export default class Category_list extends Component {
     }
     handleChange1 = (e) => {
         this.colse_mess();
+        console.log("e.target.file", e.target.value);
         this.setState({
             category_name: e.target.value
         })
@@ -204,6 +213,7 @@ export default class Category_list extends Component {
     }
     edit_category = (id) => {
         const img = this.state.userlist ? this.state.userlist.filter((x) => x.id === id) : ""
+        console.log(img);
         this.setState({
             category_id: id,
             image_url: img[0].category_image,
@@ -256,6 +266,7 @@ export default class Category_list extends Component {
     }
     render() {
         const { message, loading, userlist } = this.state;
+        // console.log("message", message ? message : "" , loading ? loading :"" , userlist);
         const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
         const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
         const currentPosts = loading === true ? this.state.userlist.slice(indexOfFirstPost, indexOfLastPost) : "";
@@ -266,6 +277,7 @@ export default class Category_list extends Component {
             else if (this.state.search) return x.category_name.toLowerCase().includes(this.state.search.toLowerCase())
 
         }) : []
+        console.log("dataFilter", dataFilter);
         const tableData = dataFilter ? dataFilter.map((x, i) => (
 
 
@@ -288,10 +300,12 @@ export default class Category_list extends Component {
 
                 </td>
             </tr>
+
+
         ))
             :
             ""
-        const { deleteValid, successs, addcatsuccess, changestatus, changestatusdone, usercount } = this.state;
+        const { deleteValid, successs, addcatsuccess, changestatus, changestatusdone } = this.state;
 
         return (
             <div>
@@ -366,7 +380,11 @@ export default class Category_list extends Component {
                         <div className="content-inner">
                             <div className="container-fluid">
                                 <div className="model">
-
+                                    {/* <div className="modfrl">
+                                    <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#myModal" data-backdrop="static" data-keyboard="false">
+                                        Add Category
+                                    </button>
+                                    </div> */}
                                     <div className="modal" id="myModal">
                                         <div className="modal-dialog">
                                             <div className="modal-content">
@@ -413,7 +431,8 @@ export default class Category_list extends Component {
                                                                 clickable
                                                             >
                                                                 {this.state.image_url ? <img src={this.state.image_url} alt={this.state.image_url} style={{ height: "50px" }} /> : "click to upload"}
-                                                            </Files> 
+                                                            </Files>
+                                                            {/* <input type="file" className="form-control" name="image" id="image" accept="image/*" /> */}
                                                         </div>
                                                         <div className="gallerys"></div>
                                                     </div>
@@ -432,22 +451,52 @@ export default class Category_list extends Component {
                                     <div className="row bg-white has-shadow">
                                         <div className="col-xl-3 col-sm-6">
                                             <div className="card gradient-4">
-                                                <Link to="/Category-List" > 
+                                                <Link to="/Category-List" >
+                                                    {/* <a href="Categories.html"> */}
                                                     <div className="card-body_one">
                                                         <h3 className="card-title_one">Categories</h3>
                                                         <div className="d-inline-block">
                                                             <h2 className="text-one_one">{this.state.usercount}</h2>
                                                         </div>
                                                         <span className="float-right display-5"><i className="fa fa-list-alt"></i></span>
-                                                    </div> 
+                                                    </div>
+                                                    {/* </a> */}
                                                 </Link>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </section>
-
-                            <section className="client no-padding-bottom oip">
+                            {/* <section className="slip_text">
+                                <div className="container-fluid">
+                                    <div className="row bg-white has-shadow one">
+                                        <div className="col-sm-5">
+                                            <div className="anny_text">
+                                                <div className="input-group">
+                                                    <div className="form-outline one">
+                                                        <input type="search" id="form1" className="form-control" placeholder="Search Category Name" onChange={(e) => this.searchSpace(e)} />
+                                                    </div>
+                                                    <button type="button" className="btn btn-primary five">
+                                                        <i className="fa fa-search-plus" aria-hidden="true"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="col-sm-7">
+                                            <div className="anny_text_one">
+                                                <div className="deteid">
+                                                    <form action="/action_page.php">
+                                                        <label for="birthday"></label>
+                                                        <input type="date" id="birthday" name="birthday" />
+                                                        <input className="sumfive" type="submit" value="Submit" />
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section> */}
+                            <section className="client no-padding-bottom yop">
                                 {this.state.deletemess_err ?
                                     <div className="alert alert-danger alert-block">
                                         <button type="button" onClick={this.colse_mess} className="close">×</button>
@@ -488,43 +537,54 @@ export default class Category_list extends Component {
                                                         <table className="table table-striped table-bordered zero-configuration dataTable no-footer" id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info">
                                                             <thead>
                                                                 <tr role="row">
-                                                                    <th className="sorting" style={{ width: "53px" }}>#</th>
-                                                                    <th className="sorting" style={{ width: "111px" }}>Image</th>
-                                                                    <th className="sorting" style={{ width: "220px" }}>Category Name</th>
-                                                                    <th className="sorting" style={{ width: "244px" }}>Created at</th>
-                                                                    <th className="sorting" style={{ width: "144px" }}>Status</th>
-                                                                    <th className="sorting" style={{ width: "147px" }}>Action</th>
+                                                                    <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-sort="descending" aria-label="#: activate to sort column ascending" style={{ width: "53px" }}>#</th>
+                                                                    <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Image: activate to sort column ascending" style={{ width: "111px" }}>Image</th>
+                                                                    <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Category Name: activate to sort column ascending" style={{ width: "220px" }}>Category Name</th>
+                                                                    <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Created at: activate to sort column ascending" style={{ width: "244px" }}>Created at</th>
+                                                                    <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Status: activate to sort column ascending" style={{ width: "144px" }}>Status</th>
+                                                                    <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending" style={{ width: "147px" }}>Action</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
                                                                 {tableData}
                                                             </tbody>
                                                         </table>
+                                                        <div className="row" style={{ width: "100%" }}>
 
-                                                        {usercount > 10 ?
-                                                            <div className="row" style={{ width: "100%" }}>
-                                                                <div className="col-md-6" >
-                                                                    <h3 className="total_rec"> Show once  </h3>
-                                                                    <select id="dropdown_custom" onChange={this.handleChange} value={this.state.postsPerPage} >
-                                                                        <option value="10">10</option>
-                                                                        <option value="20">20</option>
-                                                                        <option value="40">40</option>
-                                                                        <option value="80">80</option>
-                                                                        <option value="100">100</option>
-                                                                    </select>
-                                                                </div>
-                                                                <div className="col-md-6" >
-                                                                    <Pagination postsPerPage={this.state.postsPerPage} totalPosts={length} paginate={this.paginate} currentPage={this.state.currentPage} />
-                                                                </div>
-                                                            </div> : ""}
+                                                            <div className="col-md-6" >
+                                                                <h3 className="total_rec"> Show once  </h3>
+                                                                <select id="dropdown_custom" onChange={this.handleChange} >
+                                                                    <option value="10">10</option>
+                                                                    <option value="20">20</option>
+                                                                    <option value="40">40</option>
+                                                                    <option value="80">80</option>
+                                                                    <option value="100">100</option>
+                                                                </select>
+                                                            </div>
+                                                            <div className="col-md-6" >
+                                                                <Pagination postsPerPage={this.state.postsPerPage} totalPosts={length} paginate={this.paginate} currentPage={this.state.currentPage} />
+                                                            </div>
+                                                        </div>
+                                                        {/* <div className="row">
+                                                            <div className="col-sm-12 col-md-5">
+                                                                <div className="dataTables_info" id="DataTables_Table_0_info" role="status" aria-live="polite">Showing 1 to 10 of 75 entries</div></div><div className="col-sm-12 col-md-7"><div className="dataTables_paginate paging_simple_numbers" id="DataTables_Table_0_paginate"><ul className="pagination"><li className="paginate_button page-item previous disabled" id="DataTables_Table_0_previous"><a href="#" aria-controls="DataTables_Table_0" data-dt-idx="0" tabindex="0" className="page-link">Previous</a></li><li className="paginate_button page-item"><a href="#" aria-controls="DataTables_Table_0" data-dt-idx="1" tabindex="0" className="page-link">1</a></li><a href="#" aria-controls="DataTables_Table_0" data-dt-idx="2" tabindex="0" className="page-link">2</a><li className="paginate_button page-item next" id="DataTables_Table_0_next"><a href="#" aria-controls="DataTables_Table_0" data-dt-idx="8" tabindex="0" className="page-link">Next</a></li></ul>
+
+
+
+                                                        </div></div></div> */}
                                                     </div>
+
+
                                                 </div>
                                             </div>
+
                                         </div>
                                     </div>
                                 </div>
                             </section>
                             <Footers />
+
+
                         </div>
                     </div>
                 </div>

@@ -1,7 +1,13 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import logo from '../Image/image/logoto.png';
-import {BaseURL} from '../base_url';
+
+
+
+
+
+
+
 
 
 export default class login extends Component {
@@ -40,7 +46,7 @@ export default class login extends Component {
             redirect: 'follow'
         };
 
-        fetch(`${BaseURL}/api/super-login`, requestOptions)
+        fetch("http://134.209.157.211/champbakery/public/api/super-login", requestOptions)
             .then(response => response.json())
             .then(result => {
 
@@ -48,7 +54,7 @@ export default class login extends Component {
                     console.log("teststtst", result.message);
                    
                         localStorage.setItem('token', result.data.token)
-                        this.props.history.push('/home')
+                        this.props.history.push('/')
                     
                 }
                 // if (result.message === "Check Your credentials") {

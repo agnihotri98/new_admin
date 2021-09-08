@@ -54,12 +54,17 @@ export default class ChamTeam extends Component {
                     usercount: result.data.data.length,
                     userlist: result.data.data
                 })
+                // console.log("result", result.data.data);
+
             })
             .catch((err) => {
+
                 console.log(err.response);
+
             });
     }
     addTeam_api = (e) => {
+        // debugger
         e.preventDefault();
         const token = localStorage.getItem("token");
 
@@ -75,6 +80,8 @@ export default class ChamTeam extends Component {
                 },
             })
             .then((res) => {
+
+
                 if (res.data.message === "Team manager Added Successfully") {
                     this.setState({
                         success: res.data.message,
@@ -83,6 +90,7 @@ export default class ChamTeam extends Component {
                     // this.props.history.push('/Slider-List')
                     // window.location.reload();
                     this.getTeam_api();
+
                 }
                 if (res.data.message === "Team Updated Successfully") {
                     this.setState({
@@ -108,6 +116,7 @@ export default class ChamTeam extends Component {
             });
     }
     deleteTeam = () => {
+
         const token = localStorage.getItem("token");
         axios
             .get(`http://134.209.157.211/champbakery/public/api/deleteTeam/${this.state.id_d}`, {
@@ -121,7 +130,9 @@ export default class ChamTeam extends Component {
                     this.setState({
                         deletesuccess: res.data.message,
                         successs: true
-                    }) 
+                    })
+                    // this.props.history.push('/Slider-List')
+                    // window.location.reload();
                     this.getTeam_api();
                 }
                 if (res.data.message === "Something Went Wrong") {
@@ -197,13 +208,13 @@ export default class ChamTeam extends Component {
         const currentPosts = this.state.userlist ? this.state.userlist.slice(indexOfFirstPost, indexOfLastPost) : "";
         const length = this.state.userlist ? this.state.userlist.length : "";
 
-        // const dataFilter = currentPosts ? currentPosts?.filter((x, i) => {
-        //     if (!this.state.search) return x;
-        //     else if (this.state.search) return x.heading.toLowerCase().includes(this.state.search.toLowerCase())
+        const dataFilter = currentPosts ? currentPosts?.filter((x, i) => {
+            if (!this.state.search) return x;
+            else if (this.state.search) return x.heading.toLowerCase().includes(this.state.search.toLowerCase())
 
-        // }) : []
-        // console.log("dataFilter", dataFilter);
-        const tableData = currentPosts ? currentPosts.map((x, i) => (
+        }) : []
+        console.log("dataFilter", dataFilter);
+        const tableData = dataFilter ? dataFilter.map((x, i) => (
             <tr id="dataid53" role="row" className="even" key={i}>
                 <td className="">{i + 1}</td>
                 <td>{x.name}</td>
@@ -225,6 +236,9 @@ export default class ChamTeam extends Component {
             : ""
 
         const { deleteValid, successs, addTeamsuccess } = this.state;
+
+
+
 
         return (
             <div>
@@ -298,7 +312,7 @@ export default class ChamTeam extends Component {
                                                             <div className="form-group">
                                                                 <label className="slider_lit col-form-label" for="content">Description:</label>
                                                                 <textarea className="form-control" id="description" value={this.state.description} name="description" maxlength="500" placeholder="You can add only 150 words..." onChange={(e) => this.handleChange1(e)} required ></textarea>
-                                                                 
+                                                                {/* <input type="text" className="form-control" id="content" name="content" placeholder="content" onChange={(e) => this.handleChange1(e)} required /> */}
                                                             </div>
                                                             <div className="form-group">
                                                                 <label className="slider_lit col-form-label" for="image">Select Item images:</label>
@@ -348,14 +362,13 @@ export default class ChamTeam extends Component {
                                                         </div>
                                                         <table className="table table-striped table-bordered zero-configuration dataTable no-footer" id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info">
                                                             <thead>
-                                                                <tr role="row">
-                                                                    <th className="sorting_asc" style={{ width: "58px" }}>#</th>
-                                                                    <th className="sorting"  style={{ width: "170px" }}>Name</th>
-                                                                    <th className="sorting" style={{ width: "170px" }}>Manager Name</th>
-                                                                    <th className="sorting" style={{ width: "338px" }}>Description</th>
-                                                                    <th className="sorting" style={{ width: "271px" }}>Image</th>
-                                                                    <th className="sorting" style={{ width: "258px" }}>Created at</th>
-                                                                    <th className="sorting" style={{ width: "170px" }}>Action</th>
+                                                                <tr role="row"><th className="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending" style={{ width: "58px" }}>#</th>
+                                                                    <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Image: activate to sort column ascending" style={{ width: "170px" }}>Name</th>
+                                                                    <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Image: activate to sort column ascending" style={{ width: "170px" }}>Manager Name</th>
+                                                                    <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Item Name: activate to sort column ascending" style={{ width: "338px" }}>Description</th>
+                                                                    <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Item Name: activate to sort column ascending" style={{ width: "271px" }}>Image</th>
+                                                                    <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Created at: activate to sort column ascending" style={{ width: "258px" }}>Created at</th>
+                                                                    <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending" style={{ width: "170px" }}>Action</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
@@ -363,9 +376,10 @@ export default class ChamTeam extends Component {
                                                             </tbody>
                                                         </table>
                                                         <div className="row" style={{ width: "100%" }}>
+
                                                             <div className="col-md-6" >
                                                                 <h3 className="total_rec"> Show once  </h3>
-                                                                <select id="dropdown_custom" onChange={this.handleChange} value={this.state.postsPerPage}>
+                                                                <select id="dropdown_custom" onChange={this.handleChange} >
                                                                     <option value="10">10</option>
                                                                     <option value="20">20</option>
                                                                     <option value="40">40</option>
@@ -377,6 +391,7 @@ export default class ChamTeam extends Component {
                                                                 <div className="homepio">
                                                                     <Pagination postsPerPage={this.state.postsPerPage}
                                                                         totalPosts={length} paginate={this.paginate} currentPage={this.state.currentPage} />
+
                                                                 </div>
                                                             </div>
                                                         </div>

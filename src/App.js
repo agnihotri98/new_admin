@@ -1,6 +1,6 @@
 
 import React from "react";
-import Protected from './Protected/Protected';
+import Protected from './Protected/Protected'; 
 
 import './App.css';
 import './components/css/fontastic.css';
@@ -8,6 +8,24 @@ import './components/css/style.default.css';
 import './components/vendor/bootstrap/css/bootstrap.min.css';
 import './components/vendor/font-awesome/css/font-awesome.min.css';
 import './components/vendor/bootstrap/css/bootstrap-grid.min.css';
+// import './components/css/custom.css';
+// import './components/css/style.blue.css';
+// import './components/css/style.green.css';
+// import './components/css/style.pink.css';
+// import './components/css/style.red.css';
+// import './components/css/style.sea.css';
+// import './components/css/style.violet.css';
+// import './components/icons-reference/styles.css';
+// import './components/vendor/bootstrap/css/bootstrap-grid.css';
+// import './components/vendor/bootstrap/css/bootstrap-reboot.css';
+// import './components/vendor/bootstrap/css/bootstrap.css';
+// import './components/vendor/bootstrap/css/bootstrap-reboot.min.css';
+
+// import './components/vendor/chart.js/Chart.css';
+// import './components/vendor/chart.js/Chart.min.css';
+
+// import './components/vendor/font-awesome/css/font-awesome.css';
+
 import {
   BrowserRouter as Router,
   Route,
@@ -41,16 +59,13 @@ import newPassword from './components/ForgotPassword/NewPassword';
 
 import header from './components/Header/header';
 import sidebar from './components/Sidebar/sidebar'
-import footer from './components/Footer/footer';
+import footer from './components/Footer/footer'; 
 import logout from './components/logout/logout';
-import { Redirect } from 'react-router'
+
 // import './components/css/style.css';
 // import './components/css/renponsiv.css';
 
 function App() {
-  if (localStorage.getItem("token")) {
-    <Redirect to="/home" />
-  }
   return (
     <div className="App">
       <Router>
@@ -59,7 +74,7 @@ function App() {
           <Route exact path='/logout' component={logout} />
           <Route path='/forgot-password' component={forgotPassword} />
           <Route path='/new-password' component={newPassword} />
-          <Protected exact path='/home' component={Index} />
+          <Protected exact path='/' component={Index} />
           <Protected exact path="/User-list" component={UserList} />
           <Protected exact path="/User-view/:id?" component={Userview} />
           <Protected exact path="/Order-List" component={OrderList} />
@@ -72,7 +87,7 @@ function App() {
           <Protected exact path="/Promotion-List" component={PromotionList} />
           <Protected exact path="/Testimonial-List" component={TestimonialList} />
           <Protected exact path="/Blog-List" component={BlogList} />
-          {/* <Protected exact path="/Working-Hours" component={Working} /> */}
+          <Protected exact path="/Working-Hours" component={Working} />
           <Protected exact path="/Complaint-List" component={Complaint} />
 
           <Protected exact path="/Sec-Slider-List" component={secondSlider} />
@@ -86,7 +101,7 @@ function App() {
           <Protected exact path="/header" component={header} />
           <Protected exact path="/sidebar" component={sidebar} />
           <Protected exact path="/footer" component={footer} />
-          {/* <Route render={() => <><img style={{   height: "100%" , width: "100%"}} src={img} alt="404" /></>} /> */}
+
         </Switch>
       </Router>
     </div>

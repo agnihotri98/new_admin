@@ -24,7 +24,6 @@ export default class Report extends Component {
 
     }
     reportSearch_api = (e) => {
-        debugger
         e.preventDefault();
         const token = localStorage.getItem("token");
         const data = new FormData();
@@ -38,7 +37,6 @@ export default class Report extends Component {
                 },
             })
             .then((res) => {
-                debugger
                 this.setState({
                     userlist: res.data.data,
                     checkdatas: res.data.message,
@@ -64,7 +62,7 @@ export default class Report extends Component {
         this.setState({ [name]: value });
     };
     render() {
-        // console.log("tttttttttttttttttt", this.state.checkdatas);
+        console.log("tttttttttttttttttt", this.state.checkdatas);
         const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
         const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
         const currentPosts = this.state.userlist ? this.state.userlist.slice(indexOfFirstPost, indexOfLastPost) : "";
@@ -106,7 +104,7 @@ export default class Report extends Component {
                     <div className="page-content d-flex align-items-stretch">
                         <Sidebars />
                         <div class="content-inner">
-                            <section class="client no-padding-bottom">
+                            <section class="client no-padding-bottom_helop">
                                 <div class="container-fluid">
                                     <div class="row">
                                         <div class="col-lg-12">
@@ -161,42 +159,45 @@ export default class Report extends Component {
                                     </div>
                                 </div>
                             </section>
-                            <section class="client no-padding-bottom">
+                            <section class="client no-padding-bottom_juop">
                                 <div class="container-fluid">
                                     <div class="row">
                                         <div class="col-lg-12">
                                             <div class="series_lo">
                                                 <div class="series_one">
                                                     <div class="series_five">
-                                                        <div class="series_three">
+                                                       <div className="eideod">
+                                                       <div class="series_three">
                                                             {this.state.checkdatas === 'User List' ?<h6>User List</h6> : ''}
                                                             {this.state.checkdatas === 'Product List' ?<h6>Product List</h6> : ''}
                                                         </div>
                                                         {this.state.checkdatas !== '' ? 
                                                         <>
-                                                            <CSVLink data={this.state.userlist} >Download me</CSVLink> 
+                                                           <div class="askhd">
+                                                           <CSVLink data={this.state.userlist} >Download me</CSVLink>
+                                                            <CSVDownload data={this.state.userlist} target="_blank" /> 
+                                                           </div>
                                                         </> 
                                                         : []}
+                                                       </div>
                                                         <table className="table table-striped table-bordered zero-configuration dataTable no-footer" id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info">
                                                             <thead>
                                                                 {this.state.checkdatas === 'User List' ?
-                                                                    <tr role="row">
-                                                                        <th className="sorting_asc"  style={{ width: "58px" }}>#</th>
-                                                                        <th className="sorting" style={{ width: "338px" }}>User Name</th>
-                                                                        <th className="sorting" style={{ width: "338px" }}>Email</th>
-                                                                        <th className="sorting" style={{ width: "338px" }}>Phone Number</th>
-                                                                        <th className="sorting" style={{ width: "258px" }}>Created at</th>
+                                                                    <tr role="row"><th className="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending" style={{ width: "58px" }}>#</th>
+                                                                        <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Image: activate to sort column ascending" style={{ width: "338px" }}>User Name</th>
+                                                                        <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Item Name: activate to sort column ascending" style={{ width: "338px" }}>Email</th>
+                                                                        <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Item Name: activate to sort column ascending" style={{ width: "338px" }}>Phone Number</th>
+                                                                        <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Created at: activate to sort column ascending" style={{ width: "258px" }}>Created at</th>
 
                                                                     </tr>
                                                                     : []
                                                                 }
                                                                 {this.state.checkdatas === 'Product List' ?
-                                                                    <tr role="row">
-                                                                        <th className="sorting_asc" style={{ width: "58px" }}>#</th>
-                                                                        <th className="sorting" style={{ width: "338px" }}>Product Category</th>
-                                                                        <th className="sorting" style={{ width: "338px" }}>Product Name</th>
-                                                                        <th className="sorting" style={{ width: "338px" }}>Product Image</th>
-                                                                        <th className="sorting" style={{ width: "258px" }}>Created at</th>
+                                                                    <tr role="row"><th className="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending" style={{ width: "58px" }}>#</th>
+                                                                        <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Image: activate to sort column ascending" style={{ width: "338px" }}>Product Category</th>
+                                                                        <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Item Name: activate to sort column ascending" style={{ width: "338px" }}>Product Name</th>
+                                                                        <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Item Name: activate to sort column ascending" style={{ width: "338px" }}>Product Image</th>
+                                                                        <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Created at: activate to sort column ascending" style={{ width: "258px" }}>Created at</th>
                                                                     </tr>
                                                                     : []
                                                                 }

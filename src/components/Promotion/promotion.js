@@ -8,16 +8,15 @@ import Sidebars from '../Sidebar/sidebar';
 import Footers from '../Footer/footer';
 import Files from 'react-files';
 import Pagination from '../pagination/pagination';
-
-import {BaseURL} from '../base_url';
-
-
 export default class promotion extends Component {
 
     state = {
         usercount: '0',
         currentPage: 1,
         postsPerPage: 10,
+
+
+
         coupon_code: '',
         coupon_type: '',
         coupon_value: '',
@@ -27,18 +26,19 @@ export default class promotion extends Component {
         country_id: '',
         state_id: '',
         city: '',
+
         deleteValid: false,
         successs: false,
         addcouponsuccess: false,
+
     }
 
     componentDidMount = () => {
         this.getcoupon_api();
         this.getusers_api();
         this.getcountry_api();
+        // this.getstate_api();
     }
-
-
     onFilesChange = (files) => {
         if (files[0]) {
             console.log(files)
@@ -55,7 +55,7 @@ export default class promotion extends Component {
     getusers_api = () => {
         const token = localStorage.getItem("token");
         axios
-            .get(`${BaseURL}/api/user-list`, {
+            .get("http://134.209.157.211/champbakery/public/api/user-list", {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -76,7 +76,7 @@ export default class promotion extends Component {
     getcountry_api = () => {
         const token = localStorage.getItem("token");
         axios
-            .get(`${BaseURL}/api/get-Country`, {
+            .get("http://134.209.157.211/champbakery/public/api/get-Country", {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -105,7 +105,7 @@ export default class promotion extends Component {
         // const data = new FormData();
         // data.append("country_id",  id);
         axios
-            .get(`${BaseURL}/api/get-state/${id}`, {
+            .get(`http://134.209.157.211/champbakery/public/api/get-state/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -130,7 +130,7 @@ export default class promotion extends Component {
         // data.append("country_id", this.state.country_id);
         // data.append("state_id", this.state.state_id);
         axios
-            .get(`${BaseURL}/api/get-city/${this.state.country_id}/${stateid}`, {
+            .get(`http://134.209.157.211/champbakery/public/api/get-city/${this.state.country_id}/${stateid}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -157,7 +157,9 @@ export default class promotion extends Component {
                     Authorization: `Bearer ${token}`,
                 },
             })
-            .then((result) => { 
+            .then((result) => {
+                debugger
+                console.log("result", result);
                 this.setState({
                     usercount: result.data.data.length,
                     userlist: result.data.data
@@ -171,7 +173,8 @@ export default class promotion extends Component {
 
             });
     }
-    addcoupon_api = (e) => { 
+    addcoupon_api = (e) => {
+        // debugger
         e.preventDefault();
         const token = localStorage.getItem("token");
 
@@ -188,7 +191,8 @@ export default class promotion extends Component {
 
         data.append("coupon_image", this.state.image);
         axios
-            .post("http://134.209.157.211/champbakery/public/api/add_coupon", data, { 
+            .post("http://134.209.157.211/champbakery/public/api/add_coupon", data, {
+                //   .post('http://134.209.157.211/champbakery/public/api/add_item', data, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -198,7 +202,9 @@ export default class promotion extends Component {
                     this.setState({
                         success: res.data.message,
                         addcouponsuccess: true,
-                    }) 
+                    })
+                    // this.props.history.push('/Slider-List')
+                    // window.location.reload();
                     this.getcoupon_api();
                 }
                 if (res.data.message === "Something Went Wrong") {
@@ -217,7 +223,6 @@ export default class promotion extends Component {
                 console.log(err);
             });
     }
-
     delete_coupon = (id) => {
         const token = localStorage.getItem("token");
         axios
@@ -232,7 +237,9 @@ export default class promotion extends Component {
                     this.setState({
                         deletesuccess: res.data.message,
                         successs: true,
-                    }) 
+                    })
+                    // this.props.history.push('/Slider-List')
+                    // window.location.reload();
                     this.getcoupon_api();
                 }
                 if (res.data.message === "Something Went Wrong") {
@@ -304,13 +311,13 @@ export default class promotion extends Component {
         const currentPosts = this.state.userlist ? this.state.userlist.slice(indexOfFirstPost, indexOfLastPost) : "";
         const length = this.state.userlist ? this.state.userlist.length : "";
 
-        // const dataFilter = currentPosts ? currentPosts?.filter((x, i) => {
-        //     if (!this.state.search) return x;
-        //     else if (this.state.search) return x.category_name.toLowerCase().includes(this.state.search.toLowerCase())
+        const dataFilter = currentPosts ? currentPosts?.filter((x, i) => {
+            if (!this.state.search) return x;
+            else if (this.state.search) return x.category_name.toLowerCase().includes(this.state.search.toLowerCase())
 
-        // }) : [] 
-
-        const tableData = currentPosts ? currentPosts.map((x, i) => (
+        }) : []
+        console.log("dataFilter", dataFilter);
+        const tableData = dataFilter ? dataFilter.map((x, i) => (
             <tr id="dataid53" role="row" className="even" key={i}>
                 <td className="">{i + 1}</td>
                 <td>{x.coupon_code}</td>
@@ -324,9 +331,13 @@ export default class promotion extends Component {
                     <button type="button" className="btn btn-danger" onClick={(e) => this.deleteget_id(x.id)}>
                         Delete
                     </button>
+
                 </td>
             </tr>
-        )) : []
+
+
+        ))
+            : []
 
         const { deleteValid, successs, addcouponsuccess } = this.state;
         return (
@@ -389,6 +400,8 @@ export default class promotion extends Component {
                                                     <form id="add_banner" onSubmit={(e) => this.addcoupon_api(e)}>
                                                         <div className="modal-body">
 
+
+
                                                             <div className="form-group">
                                                                 <label className="slider_lit col-form-label" for="image">Select Item images:</label>
                                                                 <Files
@@ -408,7 +421,6 @@ export default class promotion extends Component {
                                                                 <label className="slider_lit col-form-label" for="coupon_code">Coupon code:</label>
                                                                 <input type="text" className="form-control" id="coupon_code" name="coupon_code" placeholder="Coupon code" onChange={(e) => this.handleChange1(e)} required />
                                                             </div>
-                                                            
                                                             <div className="form-group">
                                                                 <label className="slider_lit col-form-label" for="coupon_type">Coupon Type:</label>
                                                                 <select name="coupon_type" className="form-control" id="coupon_type" onChange={this.handleChange1} required>
@@ -436,7 +448,9 @@ export default class promotion extends Component {
                                                                     <option value="">Select User</option>
                                                                     {this.state.userlistss ? this.state.userlistss.map((x, i) => (
                                                                         <option value={x.id}>{x.first_name} {x.last_name}</option>
-                                                                    )) : ""}
+
+                                                                    ))
+                                                                        : ""}
                                                                 </select>
                                                             </div>
                                                             <div className="form-group">
@@ -445,7 +459,9 @@ export default class promotion extends Component {
                                                                     <option value="">Select Country</option>
                                                                     {this.state.countries ? this.state.countries.map((x, i) => (
                                                                         <option value={x.country_id}>{x.name}</option>
-                                                                    )) : ""}
+
+                                                                    ))
+                                                                        : ""}
                                                                 </select>
                                                             </div>
                                                             <div className="form-group">
@@ -454,7 +470,9 @@ export default class promotion extends Component {
                                                                     <option value="">Select state</option>
                                                                     {this.state.states ? this.state.states.map((x, i) => (
                                                                         <option value={x.id}>{x.name}</option>
-                                                                    ))  : ""}
+
+                                                                    ))
+                                                                        : ""}
                                                                 </select>
                                                             </div>
                                                             <div className="form-group">
@@ -463,7 +481,9 @@ export default class promotion extends Component {
                                                                     <option value="">Select City</option>
                                                                     {this.state.cities ? this.state.cities.map((x, i) => (
                                                                         <option value={x.id}>{x.name}</option>
-                                                                    )): ""}
+
+                                                                    ))
+                                                                        : ""}
                                                                 </select>
                                                             </div>
                                                             <div className="modal-footer">
@@ -498,16 +518,15 @@ export default class promotion extends Component {
                                                         </div>
                                                         <table className="table table-striped table-bordered zero-configuration dataTable no-footer" id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info">
                                                             <thead>
-                                                                <tr role="row">
-                                                                    <th className="sorting_asc" style={{ width: "58px" }}>#</th>
-                                                                    <th className="sorting"  style={{ width: "338px" }}>Coupon Code</th>
-                                                                    <th className="sorting" style={{ width: "338px" }}>Coupon Type</th>
-                                                                    <th className="sorting" style={{ width: "338px" }}>Coupon Value</th>
-                                                                    <th className="sorting" style={{ width: "338px" }}>Expiry Date</th>
-                                                                    <th className="sorting" style={{ width: "338px" }}>Description</th>
-                                                                    <th className="sorting" style={{ width: "338px" }}>Coupon Image</th>
-                                                                    <th className="sorting" style={{ width: "258px" }}>Created at</th>
-                                                                    <th className="sorting" style={{ width: "143px" }}>Action</th>
+                                                                <tr role="row"><th className="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending" style={{ width: "58px" }}>#</th>
+                                                                    <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Image: activate to sort column ascending" style={{ width: "338px" }}>Coupon Code</th>
+                                                                    <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Item Name: activate to sort column ascending" style={{ width: "338px" }}>Coupon Type</th>
+                                                                    <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Item Name: activate to sort column ascending" style={{ width: "338px" }}>Coupon Value</th>
+                                                                    <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Item Name: activate to sort column ascending" style={{ width: "338px" }}>Expiry Date</th>
+                                                                    <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Item Name: activate to sort column ascending" style={{ width: "338px" }}>Description</th>
+                                                                    <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Item Name: activate to sort column ascending" style={{ width: "338px" }}>Coupon Image</th>
+                                                                    <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Created at: activate to sort column ascending" style={{ width: "258px" }}>Created at</th>
+                                                                    <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending" style={{ width: "143px" }}>Action</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
@@ -515,23 +534,20 @@ export default class promotion extends Component {
                                                             </tbody>
                                                         </table>
                                                         <div className="row" style={{ width: "100%" }}>
-                                                            {length > 10 ?
-                                                                <>
-                                                                    <div className="col-md-6" >
-                                                                        <h3 className="total_rec"> Show once  </h3>
-                                                                        <select id="dropdown_custom" onChange={this.handleChange} value={this.state.postsPerPage}>
-                                                                            <option value="10">10</option>
-                                                                            <option value="20">20</option>
-                                                                            <option value="40">40</option>
-                                                                            <option value="80">80</option>
-                                                                            <option value="100">100</option>
-                                                                        </select>
-                                                                    </div>
-                                                                    <div className="col-md-6" >
-                                                                        <Pagination postsPerPage={this.state.postsPerPage} totalPosts={length} paginate={this.paginate} currentPage={this.state.currentPage} />
-                                                                    </div>
-                                                                </>
-                                                                : ""}
+
+                                                            <div className="col-md-6" >
+                                                                <h3 className="total_rec"> Show once  </h3>
+                                                                <select id="dropdown_custom" onChange={this.handleChange} >
+                                                                    <option value="10">10</option>
+                                                                    <option value="20">20</option>
+                                                                    <option value="40">40</option>
+                                                                    <option value="80">80</option>
+                                                                    <option value="100">100</option>
+                                                                </select>
+                                                            </div>
+                                                            <div className="col-md-6" >
+                                                                <Pagination postsPerPage={this.state.postsPerPage} totalPosts={length} paginate={this.paginate} currentPage={this.state.currentPage} />
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>

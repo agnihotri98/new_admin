@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
 import axios from "axios";
 import SweetAlert from 'react-bootstrap-sweetalert';
 import Headers from '../Header/header';
@@ -7,10 +7,6 @@ import Sidebars from '../Sidebar/sidebar';
 import Footers from '../Footer/footer';
 import Files from 'react-files';
 import Pagination from '../pagination/pagination';
-
-import {BaseURL} from '../base_url';
-
-
 export default class Blog extends Component {
     state = {
         usercount: '0',
@@ -23,13 +19,16 @@ export default class Blog extends Component {
         successs: false,
         addblogsuccess: false,
         deletesuccess:'',
+
     }
+
 
     componentDidMount = () => {
         this.getblog_api();
     }
     onFilesChange = (files) => {
-        if (files[0]) { 
+        if (files[0]) {
+            console.log(files)
             this.setState({
                 image: files[0],
                 image_url: URL.createObjectURL(files[0]),
@@ -46,7 +45,7 @@ export default class Blog extends Component {
 
         const token = localStorage.getItem("token");
         axios
-            .get(`${BaseURL}/api/getblog`, {
+            .get("http://134.209.157.211/champbakery/public/api/getblog", {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -60,10 +59,13 @@ export default class Blog extends Component {
 
             })
             .catch((err) => {
+
                 console.log(err.response);
+
             });
     }
     addblog_api = (e) => {
+        // debugger
         e.preventDefault();
         const token = localStorage.getItem("token");
 
@@ -73,7 +75,7 @@ export default class Blog extends Component {
 
         data.append("image", this.state.image);
         axios
-            .post(`${BaseURL}/api/${this.state.blog_id ? `edit_blog/${this.state.blog_id}` : `add_blogs`}`, data, {
+            .post(`http://134.209.157.211/champbakery/public/api/${this.state.blog_id ? `edit_blog/${this.state.blog_id}` : `add_blogs`}`, data, {
 
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -109,20 +111,23 @@ export default class Blog extends Component {
                         banner_image_err: res.data.data.heading || res.data.data.content
                     })
                 }
+                console.log(res);
             })
             .catch((err) => {
                 console.log(err);
             });
     }
     delete_blog = () => {
+        // console.log('asdddddddddddddd',this.state.id_d);
         const token = localStorage.getItem("token");
         axios
-            .get(`${BaseURL}/api/delete_blog/${this.state.id_d}`, {
+            .get(`http://134.209.157.211/champbakery/public/api/delete_blog/${this.state.id_d}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             })
             .then((res) => {
+                console.log(res);
                 if (res.data.message === "Record deleted successfully !") {
                     this.setState({
                         deletesuccess: res.data.message,
@@ -224,12 +229,12 @@ export default class Blog extends Component {
         const currentPosts = this.state.userlist ? this.state.userlist.slice(indexOfFirstPost, indexOfLastPost) : "";
         const length = this.state.userlist ? this.state.userlist.length : "";
 
-        // const dataFilter = currentPosts ? currentPosts?.filter((x, i) => {
-        //     if (!this.state.search) return x;
-        //     else if (this.state.search) return x.heading.toLowerCase().includes(this.state.search.toLowerCase())
+        const dataFilter = currentPosts ? currentPosts?.filter((x, i) => {
+            if (!this.state.search) return x;
+            else if (this.state.search) return x.heading.toLowerCase().includes(this.state.search.toLowerCase())
 
-        // }) : []
-        const tableData = currentPosts ? currentPosts.map((x, i) => (
+        }) : []
+        const tableData = dataFilter ? dataFilter.map((x, i) => (
             <tr id="dataid53" role="row" className="even" key={i}>
                 <td className="">{i + 1}</td>
                 <td>{x.heading}</td>
@@ -259,6 +264,7 @@ export default class Blog extends Component {
             : ""
          
         const { deleteValid, successs, addblogsuccess } = this.state;
+        console.log(deleteValid);
         return (
             <div>
                 {deleteValid ? (
@@ -317,9 +323,7 @@ export default class Blog extends Component {
                             <section className="dashboard-counts no-padding-bottom">
                                 <div className="container-fluid">
                                     <div className="model">
-                                        <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#myModalblog" data-backdrop="static" data-keyboard="false">
-                                            Add Blog
-                                        </button>
+                                       
                                         <div className="modal" id="myModalblog">
                                             <div className="modal-dialog">
                                                 <div className="modal-content">
@@ -394,37 +398,45 @@ export default class Blog extends Component {
 
                                 </div>
                             </section>
-                            <section className="client no-padding-bottom">
+                            <section className="client no-padding-bottom_lopo">
                                 <div className="container-fluid">
                                     <div className="row">
                                         <div className="col-lg-12">
                                             <div className="series_lo">
                                                 <div className="series_one">
                                                     <div className="series_five">
-                                                        <div className="series_three">
+                                                        <div className="glp">
+                                                            <div className="vfl">
+                                                            <div className="series_three">
                                                             <h6>All Blog</h6>
+                                                        </div>
+                                                        <div className="blpoy">
+                                                        <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#myModalblog" data-backdrop="static" data-keyboard="false">
+                                            Add Blog
+                                        </button>
+
+                                                        </div>
+                                                            </div>
                                                         </div>
                                                         <table className="table table-striped table-bordered zero-configuration dataTable no-footer" id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info">
                                                             <thead>
-                                                                <tr role="row">
-                                                                    <th className="sorting_asc"  style={{ width: "58px" }}>#</th>
-                                                                    <th className="sorting" style={{ width: "338px" }}>Headings</th>
-                                                                    <th className="sorting" style={{ width: "338px" }}>Content</th>
-                                                                    <th className="sorting" style={{ width: "338px" }}>Image</th>
-                                                                    <th className="sorting" style={{ width: "258px" }}>Created at</th>
-                                                                    <th className="sorting" style={{ width: "143px" }}>Action</th>
+                                                                <tr role="row"><th className="sorting_asc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-sort="ascending" aria-label="#: activate to sort column descending" style={{ width: "58px" }}>#</th>
+                                                                    <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Image: activate to sort column ascending" style={{ width: "338px" }}>Headings</th>
+                                                                    <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Item Name: activate to sort column ascending" style={{ width: "338px" }}>Content</th>
+                                                                    <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Item Name: activate to sort column ascending" style={{ width: "228px" }}>Image</th>
+                                                                    <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Created at: activate to sort column ascending" style={{ width: "200px" }}>Created at</th>
+                                                                    <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending" style={{ width: "143px" }}>Action</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
                                                                 {tableData}
                                                             </tbody>
                                                         </table>
-                                                        {length > 10 ? 
                                                         <div className="row" style={{ width: "100%" }}>
 
                                                             <div className="col-md-6" >
                                                                 <h3 className="total_rec"> Show once  </h3>
-                                                                <select id="dropdown_custom" onChange={this.handleChange} value={this.state.postsPerPage}>
+                                                                <select id="dropdown_custom" onChange={this.handleChange} >
                                                                     <option value="10">10</option>
                                                                     <option value="20">20</option>
                                                                     <option value="40">40</option>
@@ -436,7 +448,6 @@ export default class Blog extends Component {
                                                                 <Pagination postsPerPage={this.state.postsPerPage} totalPosts={length} paginate={this.paginate} currentPage={this.state.currentPage} />
                                                             </div>
                                                         </div>
-                                                        :""}
                                                     </div>
                                                 </div>
                                             </div>

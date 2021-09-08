@@ -12,6 +12,7 @@ export default class Testimonials extends Component {
         usercount: '0',
         currentPage: 1,
         postsPerPage: 10,
+
         deleteValid: false,
         content: '',
         heading: '',
@@ -19,15 +20,16 @@ export default class Testimonials extends Component {
         successs: false,
         addtestimonialsuccess: false,
         deletesuccess: '',
+
     }
 
 
     componentDidMount = () => {
         this.gettestimonial_api();
     }
-
     onFilesChange = (files) => {
         if (files[0]) {
+            console.log(files)
             this.setState({
                 image: files[0],
                 image_url: URL.createObjectURL(files[0]),
@@ -41,6 +43,7 @@ export default class Testimonials extends Component {
 
 
     gettestimonial_api = () => {
+
         const token = localStorage.getItem("token");
         axios
             .get("http://134.209.157.211/champbakery/public/api/gettestimonials", {
@@ -52,7 +55,9 @@ export default class Testimonials extends Component {
                 this.setState({
                     usercount: result.data.data.length,
                     userlist: result.data.data
-                }) 
+                })
+                // console.log("result", result.data.data);
+
             })
             .catch((err) => {
 
@@ -60,10 +65,11 @@ export default class Testimonials extends Component {
 
             });
     }
-    addtestimonial_api = (e) => { 
+    addtestimonial_api = (e) => {
+        // debugger
         e.preventDefault();
+        const token = localStorage.getItem("token");
 
-        const token = localStorage.getItem("token"); 
         const data = new FormData();
         data.append("content", this.state.content);
         data.append("heading", this.state.heading);
@@ -76,12 +82,17 @@ export default class Testimonials extends Component {
                 },
             })
             .then((res) => {
+
+
                 if (res.data.message === "Testimonial Added Successfully") {
                     this.setState({
                         success: res.data.message,
                         addtestimonialsuccess: true
-                    }) 
+                    })
+                    // this.props.history.push('/Slider-List')
+                    // window.location.reload();
                     this.gettestimonial_api();
+
                 }
                 if (res.data.message === "Testimonial Updated Successfully") {
                     this.setState({
@@ -99,14 +110,15 @@ export default class Testimonials extends Component {
                     this.setState({
                         banner_image_err: res.data.data.heading || res.data.data.content
                     })
-                } 
+                }
+                console.log(res);
             })
             .catch((err) => {
                 console.log(err);
             });
     }
-
     delete_testimonial = () => {
+
         const token = localStorage.getItem("token");
         axios
             .get(`http://134.209.157.211/champbakery/public/api/delete_testimonials/${this.state.id_d}`, {
@@ -120,18 +132,24 @@ export default class Testimonials extends Component {
                     this.setState({
                         deletesuccess: res.data.message,
                         successs: true
-                    }) 
+                    })
+                    // this.props.history.push('/Slider-List')
+                    // window.location.reload();
                     this.gettestimonial_api();
 
                 }
+
                 if (res.data.message === "Something Went Wrong") {
                     this.setState({
                         deletemess_err: res.data.message
                     })
                 }
+
             })
             .catch((err) => {
+
                 console.log(err.response);
+
             });
     }
     searchSpace = (event) => {
@@ -143,7 +161,6 @@ export default class Testimonials extends Component {
             postsPerPage: e.target.value
         })
     }
-
     paginate = (number) => {
         this.setState({
             currentPage: number
@@ -172,6 +189,7 @@ export default class Testimonials extends Component {
     }
     edit_testimonial = (id) => {
         const img = this.state.userlist ? this.state.userlist.filter((x) => x.id === id) : ""
+
         this.setState({
             testimonial_id: id,
             image_url: img[0].image,
@@ -190,19 +208,19 @@ export default class Testimonials extends Component {
             addtestimonialsuccess: false,
         })
     }
-
     render() {
         const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
         const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
         const currentPosts = this.state.userlist ? this.state.userlist.slice(indexOfFirstPost, indexOfLastPost) : "";
         const length = this.state.userlist ? this.state.userlist.length : "";
 
-        // const dataFilter = currentPosts ? currentPosts?.filter((x, i) => {
-        //     if (!this.state.search) return x;
-        //     else if (this.state.search) return x.heading.toLowerCase().includes(this.state.search.toLowerCase())
-        // }) : []
+        const dataFilter = currentPosts ? currentPosts?.filter((x, i) => {
+            if (!this.state.search) return x;
+            else if (this.state.search) return x.heading.toLowerCase().includes(this.state.search.toLowerCase())
 
-        const tableData = currentPosts ? currentPosts.map((x, i) => (
+        }) : []
+        // console.log("dataFilter", dataFilter);
+        const tableData = dataFilter ? dataFilter.map((x, i) => (
             <tr id="dataid53" role="row" className="even" key={i}>
                 <td className="">{i + 1}</td>
                 <td>{x.heading}</td>
@@ -217,8 +235,10 @@ export default class Testimonials extends Component {
                     <button type="button" className="btn btn-danger" onClick={(e) => this.deletetesti_id(x.id)}>
                         Delete
                     </button>
+
                 </td>
             </tr>
+
 
         ))
             : ""
@@ -326,7 +346,7 @@ export default class Testimonials extends Component {
                                     </div>
                                 </div>
                             </section>
-                            <section className="client no-padding-bottom trt">
+                            <section className="client no-padding-bottom trt_oen">
                                 <div className="container-fluid">
                                     <div className="row">
                                         <div className="col-lg-12">
@@ -358,12 +378,11 @@ export default class Testimonials extends Component {
                                                                 {tableData}
                                                             </tbody>
                                                         </table>
-                                                        {length > 10 ?
                                                         <div className="row" style={{ width: "100%" }}>
 
                                                             <div className="col-md-6" >
                                                                 <h3 className="total_rec"> Show once  </h3>
-                                                                <select id="dropdown_custom" onChange={this.handleChange} value={this.state.postsPerPage}>
+                                                                <select id="dropdown_custom" onChange={this.handleChange} >
                                                                     <option value="10">10</option>
                                                                     <option value="20">20</option>
                                                                     <option value="40">40</option>
@@ -375,7 +394,6 @@ export default class Testimonials extends Component {
                                                                 <Pagination postsPerPage={this.state.postsPerPage} totalPosts={length} paginate={this.paginate} currentPage={this.state.currentPage} />
                                                             </div>
                                                         </div>
-                                                        :""}
                                                     </div>
                                                 </div>
                                             </div>

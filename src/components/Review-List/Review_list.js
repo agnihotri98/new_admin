@@ -124,28 +124,29 @@ export default class Review_list extends Component {
 
         const dataFilter = currentPosts ? currentPosts.filter((x, i) => {
             if (!this.state.search) return x;
-            else if (this.state.search) return x.first_name.toLowerCase().includes(this.state.search.toLowerCase())
+            else if (this.state.search) return x.category_name.toLowerCase().includes(this.state.search.toLowerCase())
 
         }) : []
-        // console.log("dataFilter", dataFilter);
-        
+        console.log("dataFilter", dataFilter);
         const tableData = dataFilter ? dataFilter.map((x, i) => (
+
             <tr id="dataid16" role="row" className="odd" key={i}>
                 <td className="sorting_1">{i + 1}</td>
                 <td className="sorting_1"><img src={x.image} alt="test" style={{ width: "100px" }} /></td>
                 <td>{x.first_name} {x.last_name}</td>
-                <td><i className="fa fa-star"></i> {x.rating_star}</td>
+                <td><i className="fa fa-star checked"></i> {x.rating_star}</td>
                 <td>{x.rating_comment}</td>
                 <td>{x.created_at}</td>
-                {/* <td>
+                <td>
                     <button type="button" className="btn btn-danger" onClick={(e) => this.deleteget_id(x.id)}>
                         Delete
                     </button>
-                </td> */}
+                </td>
             </tr>
+
+
         ))
         :""
-        
         const { deleteValid, successs } = this.state;
 
         return (
@@ -201,7 +202,7 @@ export default class Review_list extends Component {
                                     </div>
                                 </div>
                             </header>
-                            <section className="dashboard-counts no-padding-bottom">
+                            <section className="dashboard-counts no-padding-bottom_io">
                                 <div className="container-fluid">
                                     <div className="row bg-white has-shadow">
                                         <div className="col-xl-3 col-sm-6">
@@ -249,22 +250,18 @@ export default class Review_list extends Component {
                                                             <h6>All Reviews</h6>
                                                         </div>
 
-                                                       
-                                                    <div class="form-outline one">
-                                                        <input type="search" id="form1" class="form-control" placeholder="Search Id Number & Name" onChange={(e) => this.searchSpace(e)} />
-                                                    </div>
-                                              
 
                                                         <table className="table table-striped table-bordered zero-configuration dataTable no-footer" id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info">
 
                                                             <thead>
+
                                                                 <tr role="row"><th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-sort="descending" aria-label="#: activate to sort column ascending" style={{ width: "49px" }}>#</th>
-                                                                    <th className="sorting_desc" style={{ width: "82px" }} aria-sort="descending">Items Image</th>
-                                                                    <th className="sorting" style={{ width: "214px" }}>Name</th>
-                                                                    <th className="sorting" style={{ width: "107px" }}>Rating</th>
-                                                                    <th className="sorting" style={{ width: "180" }}>Comment</th>
-                                                                    <th className="sorting" style={{ width: "232px" }}>Created at</th>
-                                                                    {/* <th className="sorting" style={{ width: "107px" }}>Action</th> */}
+                                                                    <th className="sorting_desc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Profile Image: activate to sort column ascending" style={{ width: "82px" }} aria-sort="descending">Items Image</th>
+                                                                    <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Name: activate to sort column ascending" style={{ width: "214px" }}>Name</th>
+                                                                    <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Rating: activate to sort column ascending" style={{ width: "107px" }}>Rating</th>
+                                                                    <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Comment: activate to sort column ascending" style={{ width: "180" }}>Comment</th>
+                                                                    <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Created at: activate to sort column ascending" style={{ width: "232px" }}>Created at</th>
+                                                                    <th className="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending" style={{ width: "107px" }}>Action</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>

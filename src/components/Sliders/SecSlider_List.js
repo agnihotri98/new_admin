@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import axios from "axios";
 import SweetAlert from 'react-bootstrap-sweetalert';
 import Headers from '../Header/header';
@@ -6,10 +6,7 @@ import Sidebars from '../Sidebar/sidebar';
 import Footers from '../Footer/footer';
 import Files from 'react-files';
 import Pagination from '../pagination/pagination';
-
-
 export default class SecSlider_List extends Component {
-
     state = {
         usercount: '0',
         currentPage: 1,
@@ -27,8 +24,8 @@ export default class SecSlider_List extends Component {
     componentDidMount = () => {
         this.getsecond_Slider_api();
     }
-    onFilesChange = (files) => {
-        if (files.length !== 0) {
+   onFilesChange = (files) => {
+        if(files.length !== 0){
             if (files[0]) {
                 console.log(files)
                 this.setState({
@@ -95,13 +92,13 @@ export default class SecSlider_List extends Component {
 
                 }
                 if (res.data.message === "Second Slider Updated Successfully") {
-
+        
                     this.setState({
                         success: res.data.message,
                         addsecslidersuccess: true
                     })
                     this.getsecond_Slider_api();
-                }
+                  }
                 if (res.data.message === "Somthing Went Wrong") {
                     this.setState({
                         mess_err: res.data.message
@@ -185,21 +182,21 @@ export default class SecSlider_List extends Component {
         const img = this.state.userlist ? this.state.userlist.filter((x) => x.id === id) : ""
 
         this.setState({
-            sec_slider_id: id,
-            image_url: img[0].image,
-            description: img[0].description,
-            heading: img[0].heading
+          sec_slider_id: id,
+          image_url: img[0].image,
+          description: img[0].description,
+          heading: img[0].heading
         })
-    }
+      }
 
     dismiss = () => {
         this.setState({
-            description: '',
-            sec_slider_id: '',
-            image_url: '',
-            heading: '',
+         description: '',
+         sec_slider_id:'',
+         image_url: '',
+         heading: '',
         })
-    }
+     }
     onCancel = () => {
         if (this.state.addsecslidersuccess === true || this.state.successs === true) {
             window.location.reload();
@@ -217,15 +214,13 @@ export default class SecSlider_List extends Component {
         const currentPosts = this.state.userlist ? this.state.userlist.slice(indexOfFirstPost, indexOfLastPost) : "";
         const length = this.state.userlist ? this.state.userlist.length : "";
 
-        // const dataFilter = currentPosts ? currentPosts?.filter((x, i) => {
-        //     if (!this.state.search) return x;
-        //     else if (this.state.search) return x.heading.toLowerCase().includes(this.state.search.toLowerCase())
+        const dataFilter = currentPosts ? currentPosts?.filter((x, i) => {
+            if (!this.state.search) return x;
+            else if (this.state.search) return x.heading.toLowerCase().includes(this.state.search.toLowerCase())
 
-        // }) : []
-
-
-        // console.log("dataFilter", dataFilter);
-        const tableData = currentPosts ? currentPosts.map((x, i) => (
+        }) : []
+        console.log("dataFilter", dataFilter);
+        const tableData = dataFilter ? dataFilter.map((x, i) => (
             <tr id="dataid53" role="row" className="even" key={i}>
                 <td className="">{i + 1}</td>
                 <td>{x.heading}</td>
@@ -233,16 +228,16 @@ export default class SecSlider_List extends Component {
                 <td><img src={x.image} className="img-fluid" style={{ maxHeight: "50px" }} alt={x.image} /></td>
                 <td>{x.created_at}</td>
                 <td>
-                    <button type="button" className="btn btn-warning  he" data-toggle="modal" data-target="#myModal" data-backdrop="static" data-keyboard="false" onClick={(e) => this.edit_secslider(x.id)}>
-                        Edit
-                    </button>
+                <button type="button" className="btn btn-warning  he" data-toggle="modal" data-target="#myModal"  data-backdrop="static" data-keyboard="false" onClick={(e) => this.edit_secslider(x.id)}>
+                    Edit
+                </button>
                     <button type="button" className="btn btn-danger" onClick={(e) => this.deletesecslider_id(x.id)}>
                         Delete
                     </button>
                 </td>
             </tr>
         ))
-            : ""
+        : ""
 
         const { deleteValid, successs, addsecslidersuccess } = this.state;
 
@@ -302,7 +297,7 @@ export default class SecSlider_List extends Component {
                                                 <div className="modal-content">
                                                     <div className="modal-header">
                                                         <h5 className="modal-title" id="exampleModalLabel">Add New Second Slider</h5>
-                                                        <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" onClick={this.dismiss}>×</span>
+                                                        <button type="button" className="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"  onClick={this.dismiss}>×</span>
                                                         </button>
                                                     </div>
                                                     <form id="add_banner" onSubmit={(e) => this.addsecond_Slider_api(e)}>
@@ -336,7 +331,7 @@ export default class SecSlider_List extends Component {
 
 
                                                             <div className="modal-footer">
-                                                                <button className="btn btn-secondary" data-dismiss="modal" onClick={this.dismiss}>Close</button>
+                                                                <button className="btn btn-secondary" data-dismiss="modal"  onClick={this.dismiss}>Close</button>
                                                                 <button type="submit" className="btn btn-primary">Save</button>
                                                             </div>
                                                         </div>
@@ -355,15 +350,15 @@ export default class SecSlider_List extends Component {
                                                 <div className="series_one">
                                                     <div className="series_five">
                                                         <div className="divlone">
-                                                            <div className="series_three">
-                                                                <h6>All Second Slider</h6>
-                                                            </div>
-                                                            <div className="divlone">
-                                                                <button type="button" className="btn btn-primary" data-toggle="modal" data-backdrop="static" data-keyboard="false" data-target="#myModal">
-                                                                    Add Second Slider
-                                                                </button>
+                                                        <div className="series_three">
+                                                            <h6>All Second Slider</h6>
+                                                        </div>
+                                                        <div className="divlone">
+                                                        <button type="button" className="btn btn-primary" data-toggle="modal"  data-backdrop="static" data-keyboard="false" data-target="#myModal">
+                                            Add Second Slider
+                                        </button>
 
-                                                            </div>
+                                                        </div>
                                                         </div>
                                                         <table className="table table-striped table-bordered zero-configuration dataTable no-footer" id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info">
                                                             <thead>
@@ -383,7 +378,7 @@ export default class SecSlider_List extends Component {
                                                         <div className="row" style={{ width: "100%" }}>
                                                             <div className="col-md-6" >
                                                                 <h3 className="total_rec"> Show once  </h3>
-                                                                <select id="dropdown_custom" onChange={this.handleChange} value={this.state.postsPerPage}>
+                                                                <select id="dropdown_custom" onChange={this.handleChange} >
                                                                     <option value="10">10</option>
                                                                     <option value="20">20</option>
                                                                     <option value="40">40</option>

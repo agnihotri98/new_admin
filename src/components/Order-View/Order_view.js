@@ -1,30 +1,26 @@
 import React, { Component } from 'react'
 import axios from "axios";
+// import { Link } from 'react-router-dom'
 import SweetAlert from 'react-bootstrap-sweetalert';
 import Headers from '../Header/header';
 import Sidebars from '../Sidebar/sidebar';
 import Footers from '../Footer/footer';
-import { BaseURL } from '../base_url';
 
 export default class Order_view extends Component {
+
     state = {
         orderdetail: '',
         checkstatus: false,
         changestatus: false,
-        success: false,
-        message: "",
-        checkstatus1: false,
     }
-
     componentDidMount = () => {
         this.getorderdetail_api();
     }
-
     getorderdetail_api = () => {
 
         const token = localStorage.getItem("token");
         axios
-            .get(`${BaseURL}/api/get-order-view/${this.props.match.params.id}`, {
+            .get(`http://134.209.157.211/champbakery/public/api/get-order-view/${this.props.match.params.id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -34,6 +30,8 @@ export default class Order_view extends Component {
 
                     orderdetail: result.data.data[0]
                 })
+                console.log("result0000000000", result.data.data);
+
             })
             .catch((err) => {
 
@@ -51,20 +49,21 @@ export default class Order_view extends Component {
         data.append("status", this.state.itemstatus);
 
         axios
-            .post(`${BaseURL}/api/product_change_status`, data, {
+            .post("http://134.209.157.211/champbakery/public/api/product_change_status", data, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             })
             .then((res) => {
+
+                console.log(res);
                 if (res.data.message === "update Status") {
                     this.setState({
                         success: res.data.message,
-                        checkstatus: false
+                        changestatus: true
                     })
                     // this.props.history.push('/Slider-List')
                     // window.location.reload();
-                    this.getorderdetail_api();
                     this.props.getorder_api();
                 }
                 console.log(res);
@@ -73,7 +72,6 @@ export default class Order_view extends Component {
                 console.log(err);
             });
     }
-
     change_Status_id = (id, e) => {
         this.setState({
             itemid: id,
@@ -81,90 +79,12 @@ export default class Order_view extends Component {
             checkstatus: true,
         })
     }
-
     onCancel = () => {
         this.setState({
-            checkstatus: false,
-            changestatus: false,
-            checkstatus1: false,
+          checkstatus: false,
+          changestatus: false,
         })
-    }
-
-    change_Status = (status, product_id, request_id) => {
-        const token = localStorage.getItem("token");
-        const formdata = new FormData();
-
-        formdata.append("refund_button_status", status);
-        formdata.append("request_id", request_id);
-        formdata.append("item_id", product_id);
-        formdata.append("status_change", "item");
-        axios
-            .post(`${BaseURL}/api/refund_button_status`, formdata, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            })
-            .then((res) => {
-                if (res.data.message === "Refund Button Updated Successfully") {
-                    this.setState({
-                        success: true,
-                        message: res.data.message
-                    })
-                    this.getorderdetail_api();
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    }
-
-    onSuccess = () => {
-        this.setState({
-            success: false,
-            message: "",
-            success_message: "",
-        })
-    }
-
-
-    refund_api = () => {
-        debugger
-        const token = localStorage.getItem("token");
-        const data = new FormData();
-        data.append("item_id", this.state.id);
-        data.append("refund_request", this.state.Status);
-        data.append("request_id", this.state.request_id);
-
-        axios
-            .post(`${BaseURL}/api/refund`, data, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            })
-            .then((res) => {
-
-                console.log(res);
-                this.setState({
-                    success_message: res.data.message,
-                    success: true,
-                    checkstatus1:false
-                })
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    }
-
-    refund_function = (id, request_id, Status) => {
-        this.setState({
-            id: id,
-            Status: Status,
-            request_id: request_id,
-            checkstatus1: true
-
-        })
-    }
-
+      }
     render() {
         // console.log('aaaaaaaaaa',this.props?.match?.params?.id);
         // console.log('bbbbbbb', this.state.orderdetail?.items);
@@ -172,7 +92,7 @@ export default class Order_view extends Component {
         const tableData = this.state.orderdetail ? this.state.orderdetail.items.map((x, i) => (
             // console.log()
             <tr class="ponsiv">
-                <td class="center">{i + 1}</td>
+                <td class="center">1</td>
                 <td class="left strong">{x.inventory_name}</td>
                 <td class="left">${x.price}.00</td>
                 {/* <td class="left">{x.quantity} kg</td> */}
@@ -182,64 +102,32 @@ export default class Order_view extends Component {
                 <td class="right">{x.samar_basket === '1' ? "Samar Basket" : x.shipping_outside === '1' ? "Order Now" : x.special_orders === '1' ? "Special Order" : ""}</td>
                 <td class="center">{x.delivery_type}</td>
                 <td class="center"> {x.delivery_date}</td>
-                {x.product_status === 'complete' ? <span class="badge badge-success px-2" style={{ color: "#fff" }}>Delivered</span> :
-                    x.product_status === 'cancel' ? <span class="badge badge-danger px-2" style={{ color: "#fff" }}>Cancel</span> :
-
-                        <td>
-                            <label class="show_Solo">
-                                <select name="DataTables_Table_0_length" aria-controls="DataTables_Table_0"
-                                    class="form-control form-control-sm one"
-                                    value={x.status}
-                                    // onChange={this.handleChange11}
-                                    onChange={(e) => this.change_Status_id(x.id, e)}>
-                                    <option value="processing">Processing </option>
-                                    <option value="complete">Delivered</option>
-                                    <option value="cancel">Cancel</option>
-                                </select>
-                            </label>
-                        </td>
-
-                }
+                {x.product_status === 'complete' ?  <span class="badge badge-success px-2" style={{ color: "#fff" }}>Delivered</span> :
+                x.product_status === 'cancel' ? <span class="badge badge-danger px-2" style={{ color: "#fff" }}>Cancel</span>:
+                
                 <td>
-                    {!x.item_refund_msg ?
-                        <>
-                            {x.product_status === 'complete' ?
-                                x.refund_status ? <button type="button" className="btn btn-success" onClick={(e) => this.refund_function(x.id, x.request_id, "item")}> {x.refund_status} </button> :
-                                    <button type="button" className={`btn btn-${Number(x.refund_button_status) === 1 ? "success" : "warning"} `} onClick={(e) => this.change_Status(Number(x.refund_button_status) === 1 ? 0 : 1, x.id, x.request_id)}> {Number(x.refund_button_status) === 1 ? "Active" : "In-active"}   </button>
-
-                                :
-                                ""}
-                        </>
-                        :
-                        <button type="button" className="btn btn-success" >  {x.refund_status} </button>}
-
-
+                    <label class="show_Solo">
+                        <select name="DataTables_Table_0_length" aria-controls="DataTables_Table_0"
+                            class="form-control form-control-sm one"
+                            value={x.status}
+                            // onChange={this.handleChange11}
+                            onChange={(e) => this.change_Status_id(x.id, e)}>
+                            <option value="processing">Processing </option>
+                            <option value="complete">Delivered</option>
+                            <option value="cancel">Cancel</option>
+                        </select>
+                    </label>
                 </td>
 
+            }
             </tr>
         ))
             :
             ""
-        const { checkstatus, changestatus, success, message, checkstatus1, success_message } = this.state;
+            const { checkstatus, changestatus } = this.state;
 
         return (
             <div>
-                {checkstatus1 ? (
-                    <SweetAlert
-                        warning
-                        showCancel
-                        cancelBtnText="No"
-                        confirmBtnText="Yes"
-                        confirmBtnBsStyle="danger"
-                        cancelBtnBsStyle="success"
-                        title="Are you sure you want to update the status?"
-                        onConfirm={(e) => this.refund_api(e)}
-                        onCancel={this.onCancel}
-                        focusCancelBtn
-                    >
-                    </SweetAlert>
-                ) : ""}
-
                 {checkstatus ? (
                     <SweetAlert
                         warning
@@ -265,16 +153,6 @@ export default class Order_view extends Component {
                     </SweetAlert>)
                     : ""}
 
-                {success ? (
-                    <SweetAlert
-                        success
-                        title="Updated successfully"
-                        onConfirm={this.onSuccess}
-                    >
-                        {success_message}
-                    </SweetAlert>)
-                    : ""}
-
                 <div className="page">
                     {/* <!-- Main Navbar--> */}
                     <Headers />
@@ -282,12 +160,12 @@ export default class Order_view extends Component {
                         {/* <!-- Side Navbar --> */}
                         <Sidebars />
                         <div class="container-fluid">
-                            <section class="viw_page">
+                            <section class="viw_page_one">
                                 <div class="card" id="printDiv">
                                     <div class="card-header">
                                         Invoice
-                                        <strong> {this.state.orderdetail ? this.state.orderdetail.order_number : ""} </strong>
-                                        <span class="float-right"> <strong>Status:</strong> {this.state.orderdetail ? this.state.orderdetail.status : ""}
+                                        <strong> {this.state.orderdetail ? this.state.orderdetail.order_number:""} </strong>
+                                        <span class="float-right"> <strong>Status:</strong> {this.state.orderdetail?this.state.orderdetail.status :""}
                                         </span>
                                     </div>
                                     <div class="card-body">
@@ -295,11 +173,11 @@ export default class Order_view extends Component {
                                             <div class="col-sm-8">
                                                 <h6 class="mb-3">To:</h6>
                                                 <div>
-                                                    <strong>{this.state.orderdetail ? this.state.orderdetail.first_name : ""} {this.state.orderdetail ? this.state.orderdetail.last_name : ""}</strong>
+                                                    <strong>{this.state.orderdetail?this.state.orderdetail.first_name:""} {this.state.orderdetail?this.state.orderdetail.last_name:""}</strong>
                                                 </div>
-                                                <div>Address: {this.state.orderdetail ? this.state.orderdetail.address : ""}</div>
-                                                <div>Email: {this.state.orderdetail ? this.state.orderdetail.email : ""}</div>
-                                                <div>Phone: +{this.state.orderdetail ? this.state.orderdetail.phone : ""}</div>
+                                                <div>Address: {this.state.orderdetail?this.state.orderdetail.address:""}</div>
+                                                <div>Email: {this.state.orderdetail?this.state.orderdetail.email:""}</div>
+                                                <div>Phone: +{this.state.orderdetail?this.state.orderdetail.phone:""}</div>
                                             </div>
                                         </div>
                                         <div class="table-responsive-sm">
@@ -317,7 +195,6 @@ export default class Order_view extends Component {
                                                         <th class="center">Delivery Type</th>
                                                         <th class="center">Delivery Date</th>
                                                         <th class="right">Action</th>
-                                                        <th class="right">Refund </th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -336,7 +213,7 @@ export default class Order_view extends Component {
                                                                 <strong>Tax</strong> (%)
                                                             </td>
                                                             <td class="right">
-                                                                <strong>{this.state.orderdetail ? this.state.orderdetail.discount : ""}%</strong>
+                                                                <strong>{this.state.orderdetail?this.state.orderdetail.discount:""}%</strong>
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -344,7 +221,7 @@ export default class Order_view extends Component {
                                                                 <strong>Delivery Charge</strong>
                                                             </td>
                                                             <td class="right">
-                                                                <strong>${this.state.orderdetail ? this.state.orderdetail.delivery_charges : ""}.00</strong>
+                                                                <strong>${this.state.orderdetail?this.state.orderdetail.delivery_charges:""}.00</strong>
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -352,7 +229,7 @@ export default class Order_view extends Component {
                                                                 <strong>Total</strong>
                                                             </td>
                                                             <td class="right">
-                                                                <strong>${this.state.orderdetail ? this.state.orderdetail.total : ""}.00</strong>
+                                                                <strong>${this.state.orderdetail?this.state.orderdetail.total:""}.00</strong>
                                                             </td>
                                                         </tr>
                                                     </tbody>
@@ -370,6 +247,7 @@ export default class Order_view extends Component {
                     </div>
                 </div>
             </div>
+
         )
     }
 }

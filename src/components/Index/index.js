@@ -9,9 +9,6 @@ import Footers from '../Footer/footer';
 import op from '../Image/image/op.jpg';
 import op1 from '../Image/image/op1.jpg';
 import op2 from '../Image/image/op2.jpg';
-import {BaseURL} from '../base_url';
-
-
 export default class index extends Component {
     state = {
         get_list: '',
@@ -34,7 +31,7 @@ export default class index extends Component {
 
         const token = localStorage.getItem("token");
         axios
-            .get(`${BaseURL}/api/dashboard`, {
+            .get("http://134.209.157.211/champbakery/public/api/dashboard", {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -54,7 +51,7 @@ export default class index extends Component {
     getorder_api = () => {
         const token = localStorage.getItem("token");
         axios
-            .get(`${BaseURL}/api/get-today-order`, {
+            .get("http://134.209.157.211/champbakery/public/api/get-today-order", {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -80,7 +77,7 @@ export default class index extends Component {
     getrecentlyorder_api = () => {
         const token = localStorage.getItem("token");
         axios
-            .get(`${BaseURL}/api/recent_placed_order`, {
+            .get("http://134.209.157.211/champbakery/public/api/recent_placed_order", {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -105,7 +102,7 @@ export default class index extends Component {
     gettrendingorder_api = () => {
         const token = localStorage.getItem("token");
         axios
-            .get(`${BaseURL}/api/get-trending-order`, {
+            .get("http://134.209.157.211/champbakery/public/api/get-trending-order", {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -139,7 +136,7 @@ export default class index extends Component {
         data.append("status", this.state.orderstatus);
 
         axios
-            .post(`${BaseURL}/api/change_status`, data, {
+            .post("http://134.209.157.211/champbakery/public/api/change_status", data, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -295,7 +292,7 @@ export default class index extends Component {
                                     <h2 className="no-margin-bottom">Welcome, Anny</h2>
                                 </div>
                             </header>
-                            <section className="dashboard-counts no-padding-bottom">
+                            <section className="dashboard-counts no-padding-bottom-one">
                                 <div className="container-fluid">
                                     <div className="row bg-white has-shadow">
 
@@ -406,7 +403,7 @@ export default class index extends Component {
                                     </div>
                                 </div>
                             </section>
-                            <section className="client no-padding-bottom">
+                            <section className="client no-padding-bottom-one">
                                 <div className="container-fluid">
                                     <div className="row">
                                         <div className="col-lg-6">
@@ -505,7 +502,7 @@ export default class index extends Component {
                                 </div>
                             </section>
 
-                            <section className="client no-padding-bottom">
+                            <section className="client no-padding-bottom-one1">
                                 <div className="container-fluid">
                                     <div className="row">
                                         <div className="col-lg-12">
@@ -543,7 +540,7 @@ export default class index extends Component {
                                 </div>
                             </section>
 
-                            <section className="projects no-padding-top">
+                            <section className="projects no-padding-top one2">
                                 <div className="container-fluid">
                                     <div className="project">
                                         <div className="row bg-white has-shadow">
@@ -579,7 +576,7 @@ export default class index extends Component {
                                 </div>
                             </section>
 
-                            <section className="feeds no-padding-top">
+                            <section className="feeds no-padding-top-one">
                                 <div className="container-fluid">
                                     <div className="row">
                                         <div className="col-lg-12">

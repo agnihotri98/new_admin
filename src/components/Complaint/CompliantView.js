@@ -4,9 +4,6 @@ import Sidebars from '../Sidebar/sidebar';
 import Footers from '../Footer/footer';
 import axios from "axios";
 import Files from 'react-files';
-
-import {BaseURL} from '../base_url';
-
 export default class CompliantView extends Component {
     state = {
         userlist: '',
@@ -35,7 +32,7 @@ export default class CompliantView extends Component {
 
         const token = localStorage.getItem("token");
         axios
-            .get(`${BaseURL}/api/complaintView/${this.props.match.params.id}`, {
+            .get(`http://134.209.157.211/champbakery/public/api/complaintView/${this.props.match.params.id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -69,7 +66,7 @@ export default class CompliantView extends Component {
         data.append("image_1", this.state.image);
         data.append("count", this.state.count);
         axios
-            .post(`${BaseURL}/api/commentComplaint`, data, {
+            .post("http://134.209.157.211/champbakery/public/api/commentComplaint", data, {
                 //   .post('http://134.209.157.211/champbakery/public/api/add_item', data, {
                 headers: {
                     Authorization: `Bearer ${token}`,

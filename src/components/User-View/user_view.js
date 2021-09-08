@@ -49,13 +49,18 @@ export default class user_view extends Component {
 
                     <Headers />
 
-                    <div className="page-content d-flex align-items-stretch">
+                    <div className="page-content d-flex align-items-stretch-gtop">
                         {/* <!-- Side Navbar --> */}
                         <Sidebars />
+                        <div className="content-inner">
+                        
 
                         <div className="container fluid">
                             <div className="row bg-white has-shadow one">
                                 <div className="col-sm-5">
+                                    <div className="name_glop">
+                                        <h4>User View</h4>
+                                    </div>
 
 
                                 </div>
@@ -84,7 +89,7 @@ export default class user_view extends Component {
                             <div className="row">
                                 <div className="col-lg-6 col-sm-6">
 
-                                    <div className="card">
+                                    <div className="card_rop">
                                         <div className="card-body">
                                             <div className="text-center">
                                                 <img src={this.state.userdetail?this.state.userdetail.image:""} className="rounded-circle" style={{ maxHeight: "100px" }} alt="" />
@@ -97,7 +102,7 @@ export default class user_view extends Component {
                                 </div>
 
                                 <div className="col-lg-6 col-sm-6">
-                                    <div className="card">
+                                    <div className="card_one">
                                         <div className="card-body">
                                             <div className="text-center">
                                                 <img src="https://gravityinfotech.net/project/food-v4/public/front/images/shopping-cart.png" width="100px" alt="" />
@@ -110,11 +115,13 @@ export default class user_view extends Component {
 
                             </div>
                         </div>
+                       
 
 
 
 
                         <Footers />
+                        </div>
 
 
                     </div>
