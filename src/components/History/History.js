@@ -8,13 +8,20 @@ import Orders_tab from "./Tabs/Orderhistory";
 import Headers from '../Header/header';
 import Sidebars from '../Sidebar/sidebar';
 import Footers from '../Footer/footer';
-import Pagination from '../pagination/pagination';
+// import Pagination from '../pagination/pagination';
+import ReactPaginate from 'react-paginate';
+import Progress from 'react-progress-2';
+import 'react-progress-2/main.css';
+import { BaseURL } from '../base_url';
+
 export default class History extends Component {
 
     state = {
         usercount: '0',
         currentPage: 1,
         postsPerPage: 10,
+        pageCount: "",
+        Delivered: true,
     }
 
     componentDidMount = () => {
@@ -22,29 +29,32 @@ export default class History extends Component {
     }
 
     getallorder_api = () => {
-
-
         const token = localStorage.getItem("token");
         axios
-            .get("http://134.209.157.211/champbakery/public/api/get-order", {
+            .get(`${BaseURL}/api/get-order?page=${this.state.currentPage}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             })
             .then((result) => {
+                debugger
+                console.log("result.data.data", result.data.data.data);
                 this.setState({
-                    userlist: result.data.data.data
+                    userlist: result.data.data.data,
+                    pageCount: result?.data.last_page,
+                    from: result?.data.from,
+                    last_page: result?.data.last_page,
+                    per_page: result?.data.per_page,
+                    to: result?.data.to,
+                    total: result?.data.total,
                 })
                 console.log("result", this.state.userlist);
 
             })
             .catch((err) => {
-
                 console.log(err.response);
-
             });
     }
-
 
     searchSpace = (event) => {
         let keyword = event.target.value;
@@ -57,48 +67,87 @@ export default class History extends Component {
         })
     }
 
-
     paginate = (number) => {
         this.setState({
             currentPage: number
         })
     }
 
+    Order_pagination = () => {
+        this.setState({
+            currentPage: 1,
+            Delivered: true,
+            Cancel: false,
+            postsPerPage: 10,
+        })
+    }
+
+    Order_pagination1 = () => {
+        this.setState({
+            currentPage: 1,
+            Cancel: true,
+            Delivered: false,
+            postsPerPage: 10,
+        })
+    }
+
+    handlePageClick = async (data) => {
+        const page = data.selected >= 0 ? data.selected + 1 : 0;
+        await Promise.resolve(this.setState(() => ({ currentPage: page })));
+        this.getallorder_api();
+    }
 
     render() {
 
-        const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
-        const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
-        const currentPosts = this.state.userlist ? this.state.userlist.slice(indexOfFirstPost, indexOfLastPost) : "";
-        const length = this.state.userlist ? this.state.userlist.length : "";
+        // const pending_f = this.state.userlist ? this.state.userlist?.filter((x) => x.status === "complete") : "";
+        // const cancel_f = this.state.userlist ? this.state.userlist?.filter((x) => x.status === "cancel") : "";
 
-        const pending_f = this.state.userlist ? this.state.userlist.filter((x) => x.status === "complete") : "";
-        const cancel_f = this.state.userlist ? this.state.userlist.filter((x) => x.status === "cancel") : "";
-        // console.log("pending_f",pending_f);
-        const pending_filter = pending_f ? pending_f.filter((x, i) => {
-            if (!this.state.search) return x;
-            else if (this.state.search) return x.order_number.toLowerCase().includes(this.state.search.toLowerCase()) || x.address.toLowerCase().includes(this.state.search.toLowerCase()) || x.first_name.toLowerCase().includes(this.state.search.toLowerCase()) || x.last_name.toLowerCase().includes(this.state.search.toLowerCase())
+        // const indexOfLastPost = this.state.currentPage * this.state.postsPerPage;
+        // const indexOfFirstPost = indexOfLastPost - this.state.postsPerPage;
 
-        }) : []
-        // console.log("pending_filter ", pending_filter);
+        // const currentPosts = pending_f ? pending_f.filter((data, i) => {
+        //     if (!this.state.search) return data;
+        //     else if (
+        //         data.order_number.toLowerCase().includes(this.state.search.toLowerCase()) ||
+        //         data.address.toLowerCase().includes(this.state.search.toLowerCase()) ||
+        //         data.first_name.toLowerCase().includes(this.state.search.toLowerCase()) ||
+        //         data.last_name.toLowerCase().includes(this.state.search.toLowerCase())
+        //     ) {
+        //         return data
+        //     }
 
-        const cancel_filter = cancel_f ? cancel_f.filter((x, i) => {
-            if (!this.state.search) return x;
-            else if (this.state.search) return x.order_number.toLowerCase().includes(this.state.search.toLowerCase()) || x.address.toLowerCase().includes(this.state.search.toLowerCase()) || x.first_name.toLowerCase().includes(this.state.search.toLowerCase()) || x.last_name.toLowerCase().includes(this.state.search.toLowerCase())
-        }) : []
-        // console.log("dataFilter", dataFilter);
+        // }) : []
+
+        // const currentPosts1 = cancel_f ? cancel_f.filter((data, i) => {
+        //     if (!this.state.search) return data;
+        //     else if (
+        //         data.order_number.toLowerCase().includes(this.state.search.toLowerCase()) ||
+        //         data.address.toLowerCase().includes(this.state.search.toLowerCase()) ||
+        //         data.first_name.toLowerCase().includes(this.state.search.toLowerCase()) ||
+        //         data.last_name.toLowerCase().includes(this.state.search.toLowerCase())
+        //     ) {
+        //         return data
+        //     }
+
+        // }) : []
+
+        // const pending_filter = currentPosts ? currentPosts.slice(indexOfFirstPost, indexOfLastPost) : "";
+        // const length = currentPosts ? currentPosts.length : "";
+
+        // const cancel_filter = currentPosts1 ? currentPosts1.slice(indexOfFirstPost, indexOfLastPost) : "";
+        // const length1 = currentPosts1 ? currentPosts1.length : "";
+
+        const { Delivered , userlist } = this.state;
 
         return (
             <div>
                 <div className="page">
-                    {/* <!-- Main Navbar--> */}
                     <Headers />
                     <div className="page-content d-flex align-items-stretch">
-                        {/* <!-- Side Navbar --> */}
                         <Sidebars />
                         <div className="content-inner">
 
-                            <section className="slip_text_on">
+                            <section className="slip_text">
                                 <div className="container-fluid">
                                     <div className="row bg-white has-shadow one">
                                         <div className="col-sm-5">
@@ -107,62 +156,24 @@ export default class History extends Component {
                                                     <div className="form-outline one">
                                                         <input type="search" id="form1" className="form-control" placeholder="Search Id Number and Name" onChange={(e) => this.searchSpace(e)} />
                                                     </div>
-                                                    {/* <button type="button" className="btn btn-primary five">
-                                                        <i className="fa fa-search-plus" aria-hidden="true"></i>
-                                                    </button> */}
                                                 </div>
-
                                             </div>
-
                                         </div>
-                                        {/* <div className="col-sm-7">
-                                            <div className="anny_text_one">
-                                                <div className="date_text">
-                                                    <h6>From</h6>
-                                                </div>
-                                                <div className="deteid">
-                                                    <form action="/action_page.php">
-                                                        <label for="birthday"></label>
-                                                        <input type="date" id="birthday" name="birthday" />
-                                                        <input className="sumfive" type="submit" value="Submit" />
-                                                    </form>
-                                                </div>
-                                                <div className="deteid">
-                                                    <div className="date_text">
-                                                        <h6>TO</h6>
-                                                    </div>
-                                                </div>
-                                                <div className="deteid">
-                                                    <form action="/action_page.php">
-                                                        <label for="birthday"></label>
-                                                        <input type="date" id="birthday" name="birthday" />
-                                                        <input className="sumfive" type="submit" value="Submit" />
-                                                    </form>
-                                                </div>
-
-
-                                            </div>
-
-                                        </div> */}
                                     </div>
                                 </div>
                             </section>
-                            <section className="client no-padding-bottom_one">
+                            <section className="client no-padding-bottom">
                                 <div className="container-fluid">
                                     <div className="row">
-
-
                                         <div className="col-sm-12">
                                             <Tabs>
                                                 <div className="tab_plas">
                                                     <TabList>
-                                                        <Tab>Delivered</Tab>
-                                                        <Tab>Cancel</Tab>
+                                                        <Tab onClick={this.Order_pagination}>  Delivered</Tab>
+                                                        <Tab onClick={this.Order_pagination1}> Cancel</Tab>
                                                     </TabList>
-
                                                     <div className="tab-content">
                                                         <div className="tab-pane active" id="tabs-1" role="tabpanel">
-
                                                             <div className="col-lg-12">
                                                                 <div className="series_lo">
                                                                     <div className="series_one">
@@ -170,50 +181,45 @@ export default class History extends Component {
                                                                             <div className="series_three">
                                                                                 <h6>All Orders  History</h6>
                                                                             </div>
-
-
                                                                             <TabPanel>
-                                                                                {/* {tableData} */}
-                                                                                <Orders_tab props_data={pending_filter} />
+                                                                                <Orders_tab props_data={userlist} getallorder_api={this.getallorder_api} />
                                                                             </TabPanel>
-
                                                                             <TabPanel>
-                                                                                {/* {tableData} */}
-                                                                                <Orders_tab props_data={cancel_filter} />
+                                                                                <Orders_tab props_data={userlist} getallorder_api={this.getallorder_api} />
                                                                             </TabPanel>
+                                                                          
                                                                             <div classNameName="row" style={{ width: "100%" }}>
 
-                                                                                <div classNameName="col-md-6" >
-                                                                                    <h3 classNameName="total_rec"> Show once  </h3>
-                                                                                    <select id="dropdown_custom" onChange={this.handleChange} >
-                                                                                        <option value="10">10</option>
-                                                                                        <option value="20">20</option>
-                                                                                        <option value="40">40</option>
-                                                                                        <option value="80">80</option>
-                                                                                        <option value="100">100</option>
-                                                                                    </select>
-                                                                                </div>
-                                                                                <div classNameName="col-md-6" >
-                                                                                    <div className="gelcoll">
-                                                                                    <Pagination postsPerPage={this.state.postsPerPage}
-                                                                                     totalPosts={length} paginate={this.paginate} currentPage={this.state.currentPage} /></div>
-                                                                                </div>
+
+                                                                                <Progress.Component
+                                                                                    style={{ background: 'orange' }}
+                                                                                    thumbStyle={{ background: 'green' }}
+                                                                                />
+
+                                                                                <ReactPaginate
+                                                                                    pageCount={this.state.pageCount}
+                                                                                    initialPage={this.state.currentPage - 1}
+                                                                                    forcePage={this.state.currentPage - 1}
+                                                                                    pageRangeDisplayed={2}
+                                                                                    marginPagesDisplayed={2}
+                                                                                    previousLabel="&#x276E;"
+                                                                                    nextLabel="&#x276F;"
+                                                                                    containerClassName="uk-pagination uk-flex-center"
+                                                                                    activeClassName="uk-active"
+                                                                                    disabledClassName="uk-disabled"
+                                                                                    onPageChange={this.handlePageClick}
+                                                                                    disableInitialCallback={true}
+                                                                                />
+
                                                                             </div>
+
+
+
                                                                         </div>
-
-
                                                                     </div>
                                                                 </div>
-
                                                             </div>
-
-
-
-
-
-
                                                         </div>
-
                                                     </div>
                                                 </div>
                                             </Tabs>
